@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ArrowRight, Bot, Crown } from "lucide-vue-next";
+import { Card, CardContent } from "@/components/ui/card";
 
 defineProps<{
   isActive: (to: string) => boolean;
@@ -46,9 +47,8 @@ defineProps<{
       </Tooltip>
     </nav>
 
-    <div
-      class="mt-auto rounded-md border border-sidebar-border bg-sidebar-accent/70 p-4"
-    >
+    <Card class="mt-auto gap-0 rounded-md border-sidebar-border bg-sidebar-accent/70 p-0">
+      <CardContent class="p-4">
       <div
         class="flex items-center gap-2 font-semibold text-sidebar-accent-foreground"
       >
@@ -62,7 +62,8 @@ defineProps<{
         Upgrade
         <ArrowRight class="size-4" />
       </Button>
-    </div>
+      </CardContent>
+    </Card>
 
     <Separator class="my-4" />
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Bell, Sparkles } from "lucide-vue-next";
+import { Card, CardContent } from "@/components/ui/card";
 
 withDefaults(
   defineProps<{
@@ -70,25 +71,24 @@ withDefaults(
     </div>
 
     <div class="grid gap-2 sm:grid-cols-3">
-      <div
-        class="flex min-h-12 items-center justify-between rounded-md border bg-card px-3 py-2"
-      >
+      <Card class="min-h-12 rounded-md py-0">
+        <CardContent class="flex h-full items-center justify-between px-3 py-2">
         <span class="text-xs font-medium text-muted-foreground">Profit</span>
         <span
-          class="text-sm font-semibold text-emerald-600 dark:text-emerald-400"
+          class="text-sm font-semibold text-chart-4"
         >
           +24.1%
         </span>
-      </div>
-      <div
-        class="flex min-h-12 items-center justify-between rounded-md border bg-card px-3 py-2"
-      >
+        </CardContent>
+      </Card>
+      <Card class="min-h-12 rounded-md py-0">
+        <CardContent class="flex h-full items-center justify-between px-3 py-2">
         <span class="text-xs font-medium text-muted-foreground">Runway</span>
         <span class="text-sm font-semibold text-foreground">8.5 months</span>
-      </div>
-      <div
-        class="flex min-h-12 items-center justify-between rounded-md border bg-card px-3 py-2"
-      >
+        </CardContent>
+      </Card>
+      <Card class="min-h-12 rounded-md py-0">
+        <CardContent class="flex h-full items-center justify-between px-3 py-2">
         <span
           class="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
         >
@@ -96,7 +96,8 @@ withDefaults(
           AI brief
         </span>
         <span class="text-sm font-semibold text-foreground">Ready</span>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   </header>
 </template>
