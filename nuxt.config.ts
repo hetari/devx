@@ -11,14 +11,24 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
     optimizeDeps: {
-      include: [
+       include: [
         '@vue/devtools-core',
         '@vue/devtools-kit',
+        'lucide-vue-next',
+        'class-variance-authority',
+        'reka-ui',
+        'clsx',
+        'tailwind-merge',
       ]
     }
   },
   
-  modules: ['@nuxt/eslint', 'shadcn-nuxt', '@vueuse/nuxt'],
+  modules: [
+    '@nuxt/eslint',
+    'shadcn-nuxt',
+    '@vueuse/nuxt',
+    '@nuxtjs/color-mode'
+  ],
 
   shadcn: {
     /**
