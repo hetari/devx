@@ -13,11 +13,17 @@ import {
 import {
   ChartContainer,
   ChartCrosshair,
+  ChartTooltip,
   ChartTooltipContent,
   componentToString,
 } from "@/components/ui/chart";
 
-type CashPoint = (typeof cashData)[number];
+const cashChartData = cashData.map((point) => ({
+  ...point,
+  date: new Date(2026, 4, Number(point.day.replace("May ", ""))),
+}));
+
+type CashPoint = (typeof cashChartData)[number];
 
 const cashFlowConfig = {
   revenue: {
@@ -73,16 +79,21 @@ const cashFlowColors = [
 
       <ChartContainer :config="cashFlowConfig" class="h-72 w-full" cursor>
         <VisXYContainer
-          :data="cashData"
+          :data="cashChartData"
           :padding="{ top: 12, bottom: 28, left: 36, right: 12 }"
         >
           <VisAxis
             type="x"
-            :tick-format="(value: string) => value.replace('May ', '')"
+            :x="(d: CashPoint) => d.date"
+            :tick-values="cashChartData.map((d) => d.date)"
+            :tick-format="
+              (value: number) =>
+                new Date(value).toLocaleDateString('en-US', { day: 'numeric' })
+            "
           />
           <VisAxis type="y" />
           <VisGroupedBar
-            :x="(d: CashPoint) => d.day"
+            :x="(d: CashPoint) => d.date"
             :y="[
               (d: CashPoint) => d.revenue,
               (d: CashPoint) => d.expenses,
@@ -91,9 +102,19 @@ const cashFlowColors = [
             :color="cashFlowColors"
             :rounded-corners="4"
           />
+          <ChartTooltip />
           <ChartCrosshair
             :color="cashFlowColors"
-            :template="componentToString(cashFlowConfig, ChartTooltipContent)"
+            :template="
+              componentToString(cashFlowConfig, ChartTooltipContent, {
+                labelFormatter(value) {
+                  return new Date(value).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                  });
+                },
+              })
+            "
           />
         </VisXYContainer>
       </ChartContainer>
