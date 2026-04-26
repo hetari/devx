@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Bell, CalendarDays, Download, Moon, Sun } from "lucide-vue-next";
+import { Bell, Moon, Sparkles, Sun } from "lucide-vue-next";
 
 withDefaults(
   defineProps<{
@@ -21,43 +21,97 @@ const toggleDark = () => {
 
 <template>
   <header
-    class="flex flex-col gap-4 pb-6 sm:flex-row sm:items-start sm:justify-between"
+    class="mb-6 flex shrink-0 flex-col gap-4 border-b bg-background/95 pb-5 pt-1"
   >
-    <div>
-      <h1 class="text-3xl font-semibold tracking-normal text-foreground">
-        {{ title }}
-      </h1>
-      <p class="mt-2 text-sm text-muted-foreground sm:text-base">
-        {{ subtitle }}
-      </p>
+    <div
+      class="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"
+    >
+      <div class="flex min-w-0 items-center gap-3">
+        <SidebarTrigger
+          class="mt-1 size-9 shrink-0 border bg-background shadow-xs"
+          aria-label="Toggle sidebar"
+        />
+        <Separator
+          orientation="vertical"
+          class="hidden data-[orientation=vertical]:h-6 sm:block"
+        />
+
+        <div class="min-w-0">
+          <h1
+            class="truncate text-2xl font-semibold tracking-normal text-foreground sm:text-3xl"
+          >
+            {{ title }}
+          </h1>
+          <p
+            v-if="subtitle"
+            class="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground"
+          >
+            {{ subtitle }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex shrink-0 flex-wrap items-center gap-2 lg:justify-end">
+        <slot />
+        <Button
+          variant="outline"
+          size="icon"
+          class="size-9 bg-background"
+          aria-label="Toggle dark mode"
+          @click="toggleDark()"
+        >
+          <Moon v-if="!isDark" class="size-4" />
+          <Sun v-else class="size-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          class="relative size-9 bg-background"
+          aria-label="Notifications"
+        >
+          <Bell class="size-4" />
+          <span
+            class="absolute right-2 top-2 size-2 rounded-full bg-primary ring-2 ring-background"
+          />
+        </Button>
+        <Avatar class="size-9 rounded-md border">
+          <AvatarFallback
+            class="rounded-md bg-sidebar-primary text-sidebar-primary-foreground"
+          >
+            T
+          </AvatarFallback>
+        </Avatar>
+      </div>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2 sm:justify-end">
-      <slot>
-        <Button variant="outline">
-          <CalendarDays class="size-4" />
-          This Month
-        </Button>
-        <Button variant="outline">
-          <Download class="size-4" />
-          Export
-        </Button>
-      </slot>
-      <Button
-        variant="outline"
-        size="icon"
-        aria-label="Toggle dark mode"
-        @click="toggleDark()"
+    <div class="grid gap-2 sm:grid-cols-3">
+      <div
+        class="flex min-h-12 items-center justify-between rounded-md border bg-card px-3 py-2"
       >
-        <Moon v-if="!isDark" class="size-4" />
-        <Sun v-else class="size-4" />
-      </Button>
-      <Button variant="ghost" size="icon" aria-label="Notifications">
-        <Bell class="size-5" />
-      </Button>
-      <Avatar>
-        <AvatarFallback>T</AvatarFallback>
-      </Avatar>
+        <span class="text-xs font-medium text-muted-foreground">Profit</span>
+        <span
+          class="text-sm font-semibold text-emerald-600 dark:text-emerald-400"
+        >
+          +24.1%
+        </span>
+      </div>
+      <div
+        class="flex min-h-12 items-center justify-between rounded-md border bg-card px-3 py-2"
+      >
+        <span class="text-xs font-medium text-muted-foreground">Runway</span>
+        <span class="text-sm font-semibold text-foreground">8.5 months</span>
+      </div>
+      <div
+        class="flex min-h-12 items-center justify-between rounded-md border bg-card px-3 py-2"
+      >
+        <span
+          class="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+        >
+          <Sparkles class="size-3.5 text-primary" />
+          AI brief
+        </span>
+        <span class="text-sm font-semibold text-foreground">Ready</span>
+      </div>
     </div>
   </header>
 </template>

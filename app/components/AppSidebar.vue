@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { SidebarProps } from "@/components/ui/sidebar";
-
 import {
   Bot,
   Building2,
@@ -10,17 +9,8 @@ import {
   Repeat2,
   Settings,
   ShoppingCart,
-  Truck,
   Wallet,
 } from "lucide-vue-next";
-
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from "@/components/ui/sidebar";
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: "icon",
@@ -28,25 +18,20 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 
 const data = {
   user: {
-    name: "Tariq Khan",
-    email: "owner@atule.local",
+    name: "Ebraheem Alhetari",
+    email: "hetari@devx.com",
     avatar: "",
   },
   teams: [
     {
-      name: "Atule",
+      name: "Devx",
       logo: Building2,
       plan: "AI Business Partner",
     },
     {
-      name: "Atule Retail",
+      name: "Devx Retail",
       logo: ShoppingCart,
       plan: "Sales workspace",
-    },
-    {
-      name: "Atule Delivery",
-      logo: Truck,
-      plan: "Operations",
     },
   ],
   navMain: [
