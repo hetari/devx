@@ -75,7 +75,6 @@ const processVoiceCommand = async (command: string) => {
 </script>
 
 <template>
-  isSynthesisSupported: {{ isSynthesisSupported }}
   <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
     <!-- Transcription Bubble -->
     <Transition

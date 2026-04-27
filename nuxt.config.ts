@@ -46,7 +46,7 @@ export default defineNuxtConfig({
     componentDir: '@/components/ui'
   },
 
-  // runtimeConfig: {
-  //   geminiApiKey: process.env.GEMINI_API_KEY
-  // }
+  runtimeConfig: {
+    geminiApiKey: process.env.GEMINI_API_KEY
+  }
 })
