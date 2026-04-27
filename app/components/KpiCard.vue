@@ -46,19 +46,19 @@ const sparklineConfig = {
       <div class="flex items-start justify-between gap-4">
         <ToneIcon :icon="icon" :tone="tone" />
         <span
-          class="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground"
+          class="rounded-md bg-muted px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-muted-foreground"
         >
           +{{ change }}
         </span>
       </div>
-      <p class="mt-5 text-sm text-muted-foreground">
+      <p class="mt-5 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
         {{ title }}
       </p>
-      <h2 class="mt-2 text-3xl font-semibold tracking-normal">
+      <h2 class="mt-1 text-3xl font-black tracking-tight">
         {{ value }}
       </h2>
-      <p class="mt-1 text-xs text-muted-foreground">
-        vs Apr 1 - Apr 30
+      <p class="mt-1 text-[10px] font-medium text-muted-foreground">
+        VS APR 1 - APR 30
       </p>
       <ChartContainer :config="sparklineConfig" class="mt-5 h-10">
         <VisXYContainer

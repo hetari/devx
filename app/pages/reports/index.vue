@@ -14,38 +14,55 @@ useSeoMeta({
 <template>
   <div>
     <AppHeader
-      title="Reports"
-      subtitle="Export clean summaries for your business decisions."
+      title="FINANCIAL REPORTS"
+      subtitle="Generate comprehensive summaries for strategic review."
     >
-      <Button>
+      <Button class="h-9 rounded-md text-[10px] font-black uppercase tracking-wider">
         <Download class="size-4" />
-        Export Report
+        EXPORT REPORT
       </Button>
     </AppHeader>
 
     <section class="grid gap-4 xl:grid-cols-3">
-      <CashFlowCard class="xl:col-span-2" />
-      <article class="rounded-md border bg-card p-5">
-        <h2 class="text-xl font-semibold tracking-normal">Business Summary</h2>
+      <CashFlowCard class="xl:col-span-2 landing-reveal" :style="{ animationDelay: '0ms' }"/>
+      <article class="rounded-md border bg-card p-5 landing-reveal" :style="{ animationDelay: '100ms' }">
+        <h2 class="text-xl font-black uppercase tracking-tight">OPERATIONAL SUMMARY</h2>
         <dl class="mt-5 grid gap-4 text-sm">
-          <div class="flex justify-between gap-4 border-b pb-3">
-            <dt class="text-muted-foreground">Total Transactions</dt>
-            <dd class="font-semibold">24</dd>
+          <div class="flex justify-between gap-4 border-b border-muted/50 pb-3">
+            <dt class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">TOTAL TRANSACTIONS</dt>
+            <dd class="font-black tabular-nums">24</dd>
           </div>
-          <div class="flex justify-between gap-4 border-b pb-3">
-            <dt class="text-muted-foreground">Avg. Daily Profit</dt>
-            <dd class="font-semibold">$29.67</dd>
+          <div class="flex justify-between gap-4 border-b border-muted/50 pb-3">
+            <dt class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">AVG. DAILY PROFIT</dt>
+            <dd class="font-black tabular-nums">$29.67</dd>
           </div>
-          <div class="flex justify-between gap-4 border-b pb-3">
-            <dt class="text-muted-foreground">Best Day</dt>
-            <dd class="font-semibold text-chart-4">May 15 +$120</dd>
+          <div class="flex justify-between gap-4 border-b border-muted/50 pb-3">
+            <dt class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">BEST DAY</dt>
+            <dd class="font-black tabular-nums text-chart-4">MAY 15 +$120</dd>
           </div>
           <div class="flex justify-between gap-4">
-            <dt class="text-muted-foreground">Worst Day</dt>
-            <dd class="font-semibold text-destructive">May 10 -$45</dd>
+            <dt class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">WORST DAY</dt>
+            <dd class="font-black tabular-nums text-destructive">MAY 10 -$45</dd>
           </div>
         </dl>
       </article>
     </section>
   </div>
 </template>
+
+<style scoped>
+.landing-reveal {
+  animation: landing-rise 520ms ease-out both;
+}
+
+@keyframes landing-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

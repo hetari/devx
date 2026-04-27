@@ -25,21 +25,21 @@ const formattedAmount = computed(() => {
   >
     <ToneIcon :icon="icon" :tone="tone" />
     <div class="min-w-0">
-      <h3 class="truncate text-sm font-medium">
+      <h3 class="truncate text-xs font-black uppercase tracking-wider">
         {{ title }}
       </h3>
-      <p class="truncate text-xs text-muted-foreground">
-        {{ time }} <span class="px-1">·</span> {{ doc }}
+      <p class="truncate text-[10px] font-medium uppercase text-muted-foreground">
+        {{ time }} <span class="px-1 text-primary">·</span> {{ doc }}
       </p>
     </div>
     <Badge
-      class="hidden justify-self-center md:inline-flex"
+      class="hidden justify-self-center md:inline-flex rounded-md text-[10px] font-black uppercase tracking-wider h-6"
       :variant="type === 'Revenue' ? 'secondary' : 'outline'"
     >
       {{ type }}
     </Badge>
     <strong
-      class="justify-self-end text-sm font-semibold"
+      class="justify-self-end text-sm font-black tabular-nums"
       :class="amount >= 0 ? 'text-chart-4' : 'text-destructive'"
     >
       {{ formattedAmount }}

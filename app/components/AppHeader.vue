@@ -33,13 +33,13 @@ withDefaults(
 
         <div class="min-w-0">
           <h1
-            class="truncate text-2xl font-semibold tracking-normal text-foreground sm:text-3xl"
+            class="truncate text-2xl font-black uppercase tracking-tight text-foreground sm:text-3xl"
           >
             {{ title }}
           </h1>
           <p
             v-if="subtitle"
-            class="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground"
+            class="mt-1 max-w-2xl text-sm font-medium leading-6 text-muted-foreground"
           >
             {{ subtitle }}
           </p>
@@ -52,7 +52,7 @@ withDefaults(
         <Button
           variant="outline"
           size="icon"
-          class="relative size-9 bg-background"
+          class="relative size-9 rounded-md bg-background"
           aria-label="Notifications"
         >
           <Bell class="size-4" />
@@ -62,7 +62,7 @@ withDefaults(
         </Button>
         <Avatar class="size-9 rounded-md border">
           <AvatarFallback
-            class="rounded-md bg-sidebar-primary text-sidebar-primary-foreground"
+            class="rounded-md bg-primary text-primary-foreground font-black text-xs"
           >
             T
           </AvatarFallback>
@@ -71,31 +71,31 @@ withDefaults(
     </div>
 
     <div class="grid gap-2 sm:grid-cols-3">
-      <Card class="min-h-12 rounded-md py-0">
+      <Card class="min-h-12 border-primary/20 rounded-md py-0 shadow-none">
         <CardContent class="flex h-full items-center justify-between px-3 py-2">
-        <span class="text-xs font-medium text-muted-foreground">Profit</span>
+        <span class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Monthly Profit</span>
         <span
-          class="text-sm font-semibold text-chart-4"
+          class="text-sm font-black text-chart-4"
         >
           +24.1%
         </span>
         </CardContent>
       </Card>
-      <Card class="min-h-12 rounded-md py-0">
+      <Card class="min-h-12 border-primary/20 rounded-md py-0 shadow-none">
         <CardContent class="flex h-full items-center justify-between px-3 py-2">
-        <span class="text-xs font-medium text-muted-foreground">Runway</span>
-        <span class="text-sm font-semibold text-foreground">8.5 months</span>
+        <span class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Cash Runway</span>
+        <span class="text-sm font-black text-foreground">8.5 MONTHS</span>
         </CardContent>
       </Card>
-      <Card class="min-h-12 rounded-md py-0">
+      <Card class="min-h-12 bg-primary text-primary-foreground rounded-md py-0 shadow-none">
         <CardContent class="flex h-full items-center justify-between px-3 py-2">
         <span
-          class="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+          class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-primary-foreground/80"
         >
-          <Sparkles class="size-3.5 text-primary" />
-          AI brief
+          <Sparkles class="size-3 text-primary-foreground" />
+          AI Brief
         </span>
-        <span class="text-sm font-semibold text-foreground">Ready</span>
+        <span class="text-sm font-black uppercase">Ready</span>
         </CardContent>
       </Card>
     </div>

@@ -50,29 +50,29 @@ const cashFlowColors = [
 <template>
   <Card class="gap-5 rounded-md py-5">
     <CardHeader class="px-5">
-      <CardTitle class="text-xl tracking-normal">
+      <CardTitle class="text-xl font-black uppercase tracking-tight">
         Cash Flow Overview
       </CardTitle>
-      <CardDescription>
+      <CardDescription class="text-xs font-medium">
         Revenue, expenses, and profit across May.
       </CardDescription>
       <CardAction>
-        <Button variant="outline" size="sm"> This Month </Button>
+        <Button variant="outline" size="sm" class="h-8 rounded-md text-[10px] font-black uppercase tracking-wider"> This Month </Button>
       </CardAction>
     </CardHeader>
 
     <CardContent class="px-5">
-      <div class="mb-5 flex flex-wrap gap-4 text-xs text-muted-foreground">
+      <div class="mb-5 flex flex-wrap gap-4 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
         <span class="inline-flex items-center gap-2">
-          <span class="size-2 rounded-full bg-chart-4" />
+          <span class="size-2 rounded-sm bg-chart-4" />
           Revenue
         </span>
         <span class="inline-flex items-center gap-2">
-          <span class="size-2 rounded-full bg-destructive" />
+          <span class="size-2 rounded-sm bg-destructive" />
           Expenses
         </span>
         <span class="inline-flex items-center gap-2">
-          <span class="size-2 rounded-full bg-primary" />
+          <span class="size-2 rounded-sm bg-primary" />
           Profit
         </span>
       </div>

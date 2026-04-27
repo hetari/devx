@@ -26,11 +26,11 @@ const visibleTransactions = computed(() => transactions.slice(0, props.limit));
 <template>
   <Card class="gap-2 rounded-md py-5">
     <CardHeader class="px-5">
-      <CardTitle class="text-xl tracking-normal">
+      <CardTitle class="text-xl font-black uppercase tracking-tight">
         {{ title }}
       </CardTitle>
       <CardAction>
-      <Button as-child variant="ghost" size="sm">
+      <Button as-child variant="ghost" size="sm" class="h-8 rounded-md text-[10px] font-black uppercase tracking-wider">
         <NuxtLink to="/transactions"> View all </NuxtLink>
       </Button>
       </CardAction>
