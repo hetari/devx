@@ -26,6 +26,7 @@ useHead({
       <main class="min-h-dvh flex-1 p-4">
         <slot />
       </main>
+      <VoiceAssistant />
     </SidebarInset>
   </SidebarProvider>
 </template>

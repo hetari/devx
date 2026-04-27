@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@nuxt/eslint": "1.15.2",
     "@nuxtjs/color-mode": "4.0.0",
     "@tailwindcss/vite": "^4.2.4",
@@ -34,5 +35,8 @@
     "vue-router": "^5.0.4",
     "vue-sonner": "^2.0.9",
     "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
   }
 }

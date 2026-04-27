@@ -11,7 +11,7 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
     optimizeDeps: {
-       include: [
+     include: [
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'lucide-vue-next',
@@ -19,6 +19,7 @@ export default defineNuxtConfig({
         'reka-ui',
         'clsx',
         'tailwind-merge',
+        '@unovis/vue',
       ]
     }
   },
@@ -43,5 +44,9 @@ export default defineNuxtConfig({
      * @default "@/components/ui"
      */
     componentDir: '@/components/ui'
-  }
+  },
+
+  // runtimeConfig: {
+  //   geminiApiKey: process.env.GEMINI_API_KEY
+  // }
 })
