@@ -1,24 +1,21 @@
 <script setup lang="ts">
-import { Bot, Mic, Paperclip, Send, Settings } from "lucide-vue-next";
+import { Bot, Settings } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 definePageMeta({
   layout: "authenticated",
 });
 
 useSeoMeta({
-  title: "AI Chat",
+  title: "AI Co-Founder Room",
 });
-
-const message = shallowRef("");
 </script>
 
 <template>
-  <div>
+  <div class="h-full flex flex-col">
     <AppHeader
-      title="AI CO-FOUNDER"
-      subtitle="Operational intelligence and strategic guidance."
+      title="CO-FOUNDER MEETING ROOM"
+      subtitle="Face-to-face strategy and operational synchronization."
     >
       <Button variant="outline" class="h-9 rounded-md text-[10px] font-black uppercase tracking-wider">
         <Settings class="size-4" />
@@ -26,68 +23,40 @@ const message = shallowRef("");
       </Button>
     </AppHeader>
 
-    <section class="rounded-md border bg-card p-6 landing-reveal">
-      <div class="mb-8 flex items-center gap-4">
-        <ToneIcon :icon="Bot" tone="primary" class="size-16" />
-        <div>
-          <h2 class="text-2xl font-black uppercase tracking-tight">OPERATOR: TARIQ</h2>
-          <p class="mt-1 text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            System ready. Query cash flow, expenses, or growth protocols.
-          </p>
+    <div class="flex-1 flex flex-col items-center justify-center relative overflow-hidden rounded-xl border bg-card/50 backdrop-blur-sm mt-4 p-8 meeting-room-bg">
+      <!-- Background Ambient Glow -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+      
+      <div class="relative z-10 w-full max-w-4xl flex flex-col items-center gap-4">
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            Live Connection Active
+          </div>
+          <h2 class="text-3xl md:text-4xl font-black uppercase tracking-tighter">Your AI Partner</h2>
+          <p class="text-muted-foreground font-medium mt-2">Speak naturally to discuss your business state, records, or goals.</p>
         </div>
-      </div>
 
-      <div class="grid gap-6">
-        <div
-          class="ml-auto max-w-xl rounded-md bg-primary px-4 py-3 text-sm font-black uppercase tracking-wider text-primary-foreground"
-        >
-          Why are my expenses so high this month?
-        </div>
-        <div
-          class="max-w-2xl rounded-md border border-primary/20 bg-background px-4 py-3 text-sm font-medium leading-relaxed"
-        >
-          <span class="block mb-2 text-[10px] font-black uppercase tracking-widest text-primary">AI ANALYSIS</span>
-          Your expenses are <strong class="font-black text-destructive">63%</strong> of revenue this month.
-          Materials, delivery, and marketing are the main drivers. Start by
-          negotiating supplier pricing and grouping nearby deliveries.
-        </div>
-      </div>
+        <!-- The Large Assistant -->
+        <VoiceAssistant />
 
-      <div
-        class="mt-8 grid grid-cols-[auto_1fr_auto_auto] items-center gap-2 rounded-md border border-primary/20 bg-background p-2"
-      >
-        <Button variant="ghost" size="icon" class="rounded-md" aria-label="Attach file">
-          <Paperclip class="size-4" />
-        </Button>
-        <Input
-          v-model="message"
-          placeholder="ENTER QUERY..."
-          class="border-0 shadow-none focus-visible:ring-0 text-xs font-black uppercase tracking-wider"
-        />
-        <Button variant="ghost" size="icon" class="rounded-md" aria-label="Voice input">
-          <Mic class="size-4" />
-        </Button>
-        <Button size="icon" class="rounded-md bg-primary" aria-label="Send message">
-          <Send class="size-4" />
-        </Button>
+        <div class="mt-8 flex flex-wrap justify-center gap-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <span class="px-4 py-2 border rounded-full">REAL-TIME VOICE API</span>
+          <span class="px-4 py-2 border rounded-full">BUSINESS EXTRACTION</span>
+          <span class="px-4 py-2 border rounded-full">GLOBAL STATE SYNC</span>
+        </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.landing-reveal {
-  animation: landing-rise 520ms ease-out both;
-}
-
-@keyframes landing-rise {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.meeting-room-bg {
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+  background-size: 40px 40px;
 }
 </style>

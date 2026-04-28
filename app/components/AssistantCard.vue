@@ -10,6 +10,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+
+const { insights } = useAIAssistantState();
+
+const latestInsight = computed(() => {
+  if (insights.value.length > 0) {
+    return insights.value[0];
+  }
+  return {
+    what_happened: "Profit is trending +24.1%.",
+    what_to_do: "Check expense pressure."
+  };
+});
 </script>
 
 <template>
@@ -22,10 +34,11 @@ import { Card } from "@/components/ui/card";
       <ToneIcon :icon="Bot" tone="primary" class="size-14" />
       <div>
         <h2 class="text-xl font-black uppercase tracking-tight">
-          System Pulse: Healthy
+          System Pulse: {{ insights.length > 0 ? 'Actionable' : 'Healthy' }}
         </h2>
         <p class="mt-1 text-sm font-medium text-muted-foreground">
-          Profit is trending <span class="text-chart-4 font-black">+24.1%</span>. Check expense pressure.
+          <span class="text-chart-4 font-black">{{ latestInsight.what_happened }}</span>
+          {{ latestInsight.what_to_do }}
         </p>
       </div>
     </div>

@@ -17,13 +17,36 @@ import {
   ChartTooltipContent,
   componentToString,
 } from "@/components/ui/chart";
+import { cashData } from "@/utils/businessData";
 
-const cashChartData = cashData.map((point) => ({
-  ...point,
-  date: new Date(2026, 4, Number(point.day.replace("May ", ""))),
-}));
+const { transactions: aiTransactions } = useAIAssistantState();
 
-type CashPoint = (typeof cashChartData)[number];
+const cashChartData = computed(() => {
+  const baseData = cashData.map((point) => ({
+    ...point,
+    date: new Date(2026, 4, Number(point.day.replace("May ", ""))),
+  }));
+  
+  if (aiTransactions.value.length === 0) return baseData;
+  
+  // Calculate today's additional revenue/expenses from AI
+  let todayRev = 0;
+  let todayExp = 0;
+  aiTransactions.value.forEach(t => {
+    if (t.type === 'revenue') todayRev += t.amount;
+    else if (t.type === 'expense') todayExp += t.amount;
+  });
+  
+  // Assuming today is May 31 for the demo data
+  const lastPoint = baseData[baseData.length - 1];
+  lastPoint.revenue += todayRev;
+  lastPoint.expenses += todayExp;
+  lastPoint.profit = lastPoint.revenue - lastPoint.expenses;
+  
+  return baseData;
+});
+
+type CashPoint = (typeof cashChartData.value)[number];
 
 const cashFlowConfig = {
   revenue: {

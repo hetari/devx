@@ -1,175 +1,138 @@
 <script setup lang="ts">
-import { Mic, MicOff, Loader2, Volume2 } from "lucide-vue-next";
-import { useSpeechRecognition, useSpeechSynthesis } from "@vueuse/core";
+import { useAIAssistant } from '~/composables/useAIAssistant';
+import { computed } from 'vue';
+import { CheckCircle2, XCircle } from 'lucide-vue-next';
 
 const {
-  isSupported: isRecognitionSupported,
-  isListening,
-  result,
-  start,
-  stop,
-} = useSpeechRecognition({
-  lang: "en-US",
-  interimResults: true,
-  continuous: false,
-});
+  robotState,
+  previewData,
+  error,
+  toggleListen,
+  handleConfirmPreview,
+  handleCancelPreview,
+  isSessionActive
+} = useAIAssistant();
 
-const speechContent = ref("");
-const isProcessing = ref(false);
-const {
-  isSupported: isSynthesisSupported,
-  speak,
-  stop: stopSpeaking,
-  isPlaying,
-} = useSpeechSynthesis(speechContent, {
-  lang: "en-US",
-  pitch: 1,
-  rate: 1,
-});
-
-const toggleListening = () => {
-  if (isListening.value) {
-    stop();
-  } else {
-    stopSpeaking();
-    result.value = "";
-    start();
-  }
-};
-
-watch(result, async (newVal) => {
-  if (!isListening.value && newVal) {
-    await processVoiceCommand(newVal);
+const getMessage = computed(() => {
+  switch (robotState.value) {
+    case 'idle':
+      return "مرحباً! أنا شريكك المؤسس الذكي. كيف يمكنني مساعدة عملك اليوم؟";
+    case 'listening':
+      return "أستمع إليك...";
+    case 'understanding':
+      return "أفكر وأحلل...";
+    case 'preview_ready':
+      return "هذا ما فهمته. يرجى التأكيد.";
+    case 'saved':
+      return "تم حفظ بياناتك وتحديث كل شيء!";
+    default:
+      return "جاهز.";
   }
 });
-
-// Fallback for when recognition stops naturally
-watch(isListening, async (listening) => {
-  if (!listening && result.value && !isProcessing.value) {
-    await processVoiceCommand(result.value);
-  }
-});
-
-const processVoiceCommand = async (command: string) => {
-  if (!command.trim()) return;
-
-  isProcessing.value = true;
-  try {
-    const { data, error } = await useFetch("/api/gemini/voice", {
-      method: "POST",
-      body: { prompt: command },
-    });
-
-    if (error.value) throw error.value;
-
-    if (data.value?.text) {
-      speechContent.value = data.value.text;
-      speak();
-    }
-  } catch (err) {
-    console.error("Error processing voice command:", err);
-  } finally {
-    isProcessing.value = false;
-  }
-};
 </script>
 
 <template>
-  <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
-    <!-- Transcription Bubble -->
+  <div class="relative flex flex-col items-center justify-center gap-12 w-full min-h-[70vh] py-10">
+    <!-- Error Bubble -->
+    <Transition
+      enter-active-class="animate-in fade-in slide-in-from-top-4 duration-300"
+      leave-active-class="animate-out fade-out slide-in-from-top-4 duration-300"
+    >
+      <div v-if="error" class="absolute top-0 left-1/2 -translate-x-1/2 z-20 w-full max-w-md rounded-xl border border-destructive/20 bg-destructive/90 p-3 text-center text-white shadow-2xl backdrop-blur-md">
+        <p class="text-sm font-bold tracking-wide uppercase">{{ error }}</p>
+      </div>
+    </Transition>
+
+    <!-- Preview Modal / Bubble -->
     <Transition
       enter-active-class="animate-in fade-in slide-in-from-bottom-4 duration-300"
       leave-active-class="animate-out fade-out slide-in-from-bottom-4 duration-300"
     >
-      <div
-        v-if="isListening || isProcessing || isPlaying || result"
-        class="max-w-xs rounded-2xl border border-white/20 bg-background/80 p-4 shadow-xl backdrop-blur-xl md:max-w-md"
-      >
-        <div class="flex items-center gap-2 mb-2">
-          <div v-if="isListening" class="flex gap-1">
-            <span class="size-1.5 animate-bounce rounded-full bg-primary" />
-            <span
-              class="size-1.5 animate-bounce rounded-full bg-primary [animation-delay:0.2s]"
-            />
-            <span
-              class="size-1.5 animate-bounce rounded-full bg-primary [animation-delay:0.4s]"
-            />
-          </div>
-          <span
-            class="text-[10px] font-black uppercase tracking-widest text-muted-foreground"
-          >
-            {{
-              isListening
-                ? "Listening..."
-                : isProcessing
-                  ? "Thinking..."
-                  : isPlaying
-                    ? "Gemini Speaking"
-                    : "Last Command"
-            }}
-          </span>
+      <div v-if="previewData" class="w-full max-w-md rounded-2xl border border-white/20 bg-background/90 p-6 shadow-2xl backdrop-blur-xl">
+        <h4 class="font-bold mb-4 text-base">Please Confirm</h4>
+        
+        <div v-if="previewData.revenues.length > 0" class="mb-4">
+          <h5 class="text-sm font-semibold text-chart-4 mb-2 uppercase tracking-wider">Revenues</h5>
+          <ul class="text-sm space-y-2">
+            <li v-for="(r, i) in previewData.revenues" :key="i" class="flex justify-between border-b border-border/50 pb-1">
+              <span>{{ r.category }} (x{{ r.quantity || 1 }})</span>
+              <span class="font-bold text-chart-4">+${{ r.amount }}</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div v-if="previewData.expenses.length > 0" class="mb-6">
+          <h5 class="text-sm font-semibold text-destructive mb-2 uppercase tracking-wider">Expenses</h5>
+          <ul class="text-sm space-y-2">
+            <li v-for="(e, i) in previewData.expenses" :key="i" class="flex justify-between border-b border-border/50 pb-1">
+              <span>{{ e.category }}</span>
+              <span class="font-bold text-destructive">-${{ e.amount }}</span>
+            </li>
+          </ul>
         </div>
 
-        <p class="text-sm font-medium leading-relaxed">
-          {{
-            isListening
-              ? result || "Say something..."
-              : isProcessing
-                ? "Analyzing your request..."
-                : isPlaying
-                  ? speechContent
-                  : result
-          }}
-        </p>
+        <div class="flex gap-3">
+          <Button class="flex-1 gap-2" variant="outline" @click="handleCancelPreview">
+            <XCircle class="size-5" /> Cancel
+          </Button>
+          <Button class="flex-1 gap-2 bg-primary text-primary-foreground hover:bg-primary/90" @click="handleConfirmPreview">
+            <CheckCircle2 class="size-5" /> Confirm
+          </Button>
+        </div>
       </div>
     </Transition>
 
-    <!-- Main Button -->
-    <button
-      class="group relative flex size-14 items-center justify-center rounded-full border border-white/20 bg-primary shadow-2xl transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-      :disabled="!isRecognitionSupported"
-      :aria-label="isListening ? 'Stop Listening' : 'Start Voice Assistant'"
-      @click="toggleListening"
+    <!-- Speech Bubble -->
+    <Transition
+      enter-active-class="animate-in fade-in slide-in-from-bottom-4 duration-300"
+      leave-active-class="animate-out fade-out slide-in-from-bottom-4 duration-300"
     >
-      <!-- Pulse Rings -->
-      <span
-        v-if="isListening"
-        class="absolute inset-0 animate-ping rounded-full bg-primary/40"
-      />
-      <span
-        v-if="isListening"
-        class="absolute inset-0 animate-ping rounded-full bg-primary/20 [animation-delay:0.5s]"
-      />
+      <div v-show="!previewData && (isSessionActive || robotState !== 'idle')" class="relative w-full max-w-lg rounded-3xl border border-white/10 bg-background/80 p-6 shadow-2xl backdrop-blur-xl text-center" dir="rtl">
+        <p class="text-lg md:text-xl font-medium leading-relaxed">{{ getMessage }}</p>
+        <!-- Triangle pointing down to the robot -->
+        <div class="absolute -bottom-3 left-1/2 w-6 h-6 -translate-x-1/2 rotate-45 border-b border-r border-white/10 bg-background/80 backdrop-blur-xl"></div>
+      </div>
+    </Transition>
 
-      <!-- Icons -->
-      <Loader2
-        v-if="isProcessing"
-        class="size-6 animate-spin text-primary-foreground"
-      />
-      <Volume2
-        v-else-if="isPlaying"
-        class="size-6 text-primary-foreground"
-        @click.stop="stopSpeaking"
-      />
-      <Mic
-        v-else-if="!isListening"
-        class="size-6 text-primary-foreground transition-transform group-hover:scale-110"
-      />
-      <MicOff v-else class="size-6 text-primary-foreground" />
+    <!-- Robot Visuals -->
+    <button
+      class="group relative flex size-64 md:size-80 lg:size-96 items-center justify-center transition-transform hover:scale-105 active:scale-95 cursor-pointer animate-float"
+      :aria-label="robotState === 'listening' ? 'Stop Listening' : 'Start Voice Assistant'"
+      @click="toggleListen"
+    >
+      <!-- Glow rings -->
+      <div class="absolute inset-0 rounded-full transition-all duration-500 blur-2xl opacity-40" 
+        :class="{
+          'bg-blue-500 scale-100': robotState === 'idle',
+          'bg-blue-400 scale-110 animate-pulse': robotState === 'listening',
+          'bg-purple-500 scale-110 animate-spin-slow': robotState === 'understanding',
+          'bg-orange-500 scale-105 animate-pulse': robotState === 'preview_ready',
+          'bg-green-500 scale-100': robotState === 'saved'
+        }"
+      ></div>
 
-      <!-- Tooltip (Desktop) -->
-      <span
-        class="absolute right-full mr-3 hidden whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-xs font-bold text-background group-hover:block"
-      >
-        {{ isListening ? "Stop" : isPlaying ? "Mute" : "Ask Gemini" }}
-      </span>
+      <!-- Robot Images overlapping -->
+      <div class="relative w-full h-full pointer-events-none">
+        <img src="/robot/0.png" alt="Idle" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="robotState === 'idle' ? 'opacity-100' : 'opacity-0'" />
+        <img src="/robot/2.png" alt="Listening" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="robotState === 'listening' ? 'opacity-100' : 'opacity-0'" />
+        <img src="/robot/2.png" alt="Understanding" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="robotState === 'understanding' ? 'opacity-100' : 'opacity-0'" />
+        <img src="/robot/3.png" alt="Preview/Saved" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="(robotState === 'preview_ready' || robotState === 'saved') ? 'opacity-100' : 'opacity-0'" />
+      </div>
     </button>
   </div>
 </template>
 
 <style scoped>
-.backdrop-blur-xl {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+.animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }
 </style>

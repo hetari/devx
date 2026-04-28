@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@google/genai": "^1.50.1",
     "@google/generative-ai": "^0.24.1",
     "@nuxt/eslint": "1.15.2",
     "@nuxtjs/color-mode": "4.0.0",

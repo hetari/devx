@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { kpis as mockKpis } from "@/utils/businessData";
+
 definePageMeta({
   layout: "authenticated",
 })
@@ -6,6 +8,42 @@ definePageMeta({
 useSeoMeta({
   title: "Dashboard",
 })
+
+const { transactions: aiTransactions } = useAIAssistantState();
+
+const kpis = computed(() => {
+  if (aiTransactions.value.length === 0) return mockKpis;
+  
+  // Calculate today's additional revenue/expenses from AI
+  let todayRev = 0;
+  let todayExp = 0;
+  aiTransactions.value.forEach(t => {
+    if (t.type === 'revenue') todayRev += t.amount;
+    else if (t.type === 'expense') todayExp += t.amount;
+  });
+  
+  // Extract base values from mockKpis
+  const baseRevStr = mockKpis[0].value.replace(/[^0-9.-]+/g,"");
+  const baseExpStr = mockKpis[1].value.replace(/[^0-9.-]+/g,"");
+  
+  const baseRev = parseFloat(baseRevStr);
+  const baseExp = parseFloat(baseExpStr);
+  
+  const newRev = baseRev + todayRev;
+  const newExp = baseExp + todayExp;
+  const newProfit = newRev - newExp;
+  const newMargin = newRev > 0 ? (newProfit / newRev) * 100 : 0;
+  
+  const formatter = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+  
+  const updatedKpis = [...mockKpis];
+  updatedKpis[0] = { ...updatedKpis[0], value: formatter.format(newRev) };
+  updatedKpis[1] = { ...updatedKpis[1], value: formatter.format(newExp) };
+  updatedKpis[2] = { ...updatedKpis[2], value: formatter.format(newProfit) };
+  updatedKpis[3] = { ...updatedKpis[3], value: `${newMargin.toFixed(1)}%` };
+  
+  return updatedKpis;
+});
 </script>
 
 <template>
