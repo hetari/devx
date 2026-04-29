@@ -1,4 +1,7 @@
-# Nuxt Minimal Starter
+# Build your company with AI
+
+<img width="2818" height="1616" alt="image" src="https://github.com/user-attachments/assets/7e587cfb-65fb-4070-9ca3-0b6506486f3e" />
+
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
