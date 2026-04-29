@@ -17,33 +17,17 @@ import {
   ChartTooltipContent,
   componentToString,
 } from "@/components/ui/chart";
-import { cashData } from "@/utils/businessData";
 
-const { transactions: aiTransactions } = useAIAssistantState();
+const props = defineProps<{
+  chartData?: any[]
+}>();
 
 const cashChartData = computed(() => {
-  const baseData = cashData.map((point) => ({
+  if (!props.chartData) return [];
+  return props.chartData.map((point) => ({
     ...point,
-    date: new Date(2026, 4, Number(point.day.replace("May ", ""))),
+    date: new Date(point.day),
   }));
-  
-  if (aiTransactions.value.length === 0) return baseData;
-  
-  // Calculate today's additional revenue/expenses from AI
-  let todayRev = 0;
-  let todayExp = 0;
-  aiTransactions.value.forEach(t => {
-    if (t.type === 'revenue') todayRev += t.amount;
-    else if (t.type === 'expense') todayExp += t.amount;
-  });
-  
-  // Assuming today is May 31 for the demo data
-  const lastPoint = baseData[baseData.length - 1];
-  lastPoint.revenue += todayRev;
-  lastPoint.expenses += todayExp;
-  lastPoint.profit = lastPoint.revenue - lastPoint.expenses;
-  
-  return baseData;
 });
 
 type CashPoint = (typeof cashChartData.value)[number];
@@ -77,10 +61,10 @@ const cashFlowColors = [
         Cash Flow Overview
       </CardTitle>
       <CardDescription class="text-xs font-medium">
-        Revenue, expenses, and profit across May.
+        Revenue, expenses, and profit trends from real data.
       </CardDescription>
       <CardAction>
-        <Button variant="outline" size="sm" class="h-8 rounded-md text-[10px] font-black uppercase tracking-wider"> This Month </Button>
+        <Button variant="outline" size="sm" class="h-8 rounded-md text-[10px] font-black uppercase tracking-wider"> Real Time </Button>
       </CardAction>
     </CardHeader>
 
@@ -100,7 +84,7 @@ const cashFlowColors = [
         </span>
       </div>
 
-      <ChartContainer :config="cashFlowConfig" class="h-72 w-full" cursor>
+      <ChartContainer v-if="cashChartData.length" :config="cashFlowConfig" class="h-72 w-full" cursor>
         <VisXYContainer
           :data="cashChartData"
           :padding="{ top: 12, bottom: 28, left: 36, right: 12 }"
@@ -141,6 +125,9 @@ const cashFlowColors = [
           />
         </VisXYContainer>
       </ChartContainer>
+      <div v-else class="h-72 w-full flex items-center justify-center text-muted-foreground italic text-xs">
+        No transaction data available yet.
+      </div>
     </CardContent>
   </Card>
 </template>

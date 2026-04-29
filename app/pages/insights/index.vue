@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowRight, TriangleAlert, TrendingUp } from "lucide-vue-next";
+import { ArrowRight, TriangleAlert, TrendingUp, Lightbulb } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -10,6 +10,16 @@ definePageMeta({
 useSeoMeta({
   title: "Insights",
 });
+
+const { data: insights, refresh } = await useFetch('/api/insights');
+
+// Re-fetch when AI saves data
+const { robotState } = useAIAssistantState();
+watch(robotState, (newState) => {
+  if (newState === 'saved') {
+    refresh();
+  }
+});
 </script>
 
 <template>
@@ -19,44 +29,49 @@ useSeoMeta({
       subtitle="Actionable intelligence for strategic growth."
     />
 
-    <section class="grid gap-4 xl:grid-cols-[1.4fr_.8fr]">
-      <article class="rounded-md border border-destructive/30 bg-card p-6 landing-reveal" :style="{ animationDelay: '0ms' }">
+    <section class="grid gap-4">
+      <article 
+        v-for="(insight, index) in insights" 
+        :key="insight.id"
+        class="rounded-md border bg-card p-6 landing-reveal"
+        :class="{'border-destructive/30': index === 0 && insight.category === 'Cash Flow'}"
+        :style="{ animationDelay: `${index * 100}ms` }"
+      >
         <div class="flex flex-col gap-5 md:flex-row">
           <ToneIcon
-            :icon="TriangleAlert"
-            tone="danger"
+            :icon="insight.category === 'Cash Flow' ? TriangleAlert : Lightbulb"
+            :tone="insight.category === 'Cash Flow' ? 'danger' : 'success'"
             class="size-16 rounded-full"
           />
           <div class="flex-1">
-            <Badge variant="destructive" class="rounded-md text-[10px] font-black uppercase tracking-wider">CRITICAL WARNING</Badge>
-            <h2 class="mt-3 text-3xl font-black uppercase tracking-tight">
-              EXPENSES AT <span class="text-destructive">63%</span> OF REVENUE
+            <Badge v-if="insight.category" variant="outline" class="rounded-md text-[10px] font-black uppercase tracking-wider mb-2">
+              {{ insight.category }}
+            </Badge>
+            <h2 class="text-2xl font-black uppercase tracking-tight">
+              {{ insight.whatHappened }}
             </h2>
-            <p class="mt-3 leading-relaxed text-sm font-medium text-muted-foreground">
-              This metric exceeds the optimal operational range, signaling potential erosion of profit margins.
-            </p>
+            <div class="mt-4 grid gap-4 md:grid-cols-2">
+              <div>
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Why it matters</h4>
+                <p class="text-sm font-medium leading-relaxed">{{ insight.whyItMatters }}</p>
+              </div>
+              <div v-if="insight.whatToDo">
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-primary mb-1">What to do</h4>
+                <p class="text-sm font-medium leading-relaxed">{{ insight.whatToDo }}</p>
+              </div>
+            </div>
             <div class="mt-6 flex flex-wrap gap-3">
               <Button as-child class="h-10 rounded-md text-[10px] font-black uppercase tracking-wider">
-                <NuxtLink to="/chat">ASK AI FOR ADVICE</NuxtLink>
-              </Button>
-              <Button variant="outline" class="h-10 rounded-md text-[10px] font-black uppercase tracking-wider">
-                SEE DETAILS
-                <ArrowRight class="size-4" />
+                <NuxtLink to="/chat">DISCUSS WITH CO-FOUNDER</NuxtLink>
               </Button>
             </div>
           </div>
         </div>
       </article>
 
-      <article class="rounded-md border bg-card p-6 landing-reveal" :style="{ animationDelay: '100ms' }">
-        <ToneIcon :icon="TrendingUp" tone="success" />
-        <h2 class="mt-5 text-2xl font-black uppercase tracking-tight">
-          PROFIT MARGIN: OPTIMAL
-        </h2>
-        <p class="mt-3 leading-relaxed text-sm font-medium text-muted-foreground">
-          Your profit increased by <strong class="font-black text-chart-4">24.1%</strong> compared to last month.
-        </p>
-      </article>
+      <div v-if="!insights || insights.length === 0" class="py-20 text-center text-muted-foreground italic uppercase tracking-widest text-xs">
+        No strategic insights generated yet. Talk to your AI partner to analyze your business.
+      </div>
     </section>
 
     <section class="mt-4 grid gap-4 xl:grid-cols-2">

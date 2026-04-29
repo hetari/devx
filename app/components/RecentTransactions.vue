@@ -8,10 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import TransactionRow from "./TransactionRow.vue";
-import { transactions as mockTransactions } from "@/utils/businessData";
 import { TrendingUp, ShoppingCart, Truck, Package, ReceiptText } from "lucide-vue-next";
-
-const { transactions: aiTransactions } = useAIAssistantState();
 
 const props = withDefaults(
   defineProps<{
@@ -19,36 +16,46 @@ const props = withDefaults(
     limit?: number;
   }>(),
   {
-    title: "Recent Transactions",
-    limit: 5,
+    title: "Recent Activity",
+    limit: 10,
   },
 );
 
-const mappedAiTransactions = computed(() => {
-  return aiTransactions.value.map((t) => {
+// Fetch real transactions
+const { data: dbTransactions, refresh } = await useFetch('/api/transactions', {
+  query: { limit: props.limit }
+});
+
+// Re-fetch when AI saves data
+const { robotState } = useAIAssistantState();
+watch(robotState, (newState) => {
+  if (newState === 'saved') {
+    refresh();
+  }
+});
+
+const mappedTransactions = computed(() => {
+  if (!dbTransactions.value) return [];
+  
+  return dbTransactions.value.map((t: any) => {
     let icon = ReceiptText;
-    if (t.category.toLowerCase().includes('material')) icon = Package;
-    else if (t.category.toLowerCase().includes('deliver')) icon = Truck;
+    const cat = t.category.toLowerCase();
+    if (cat.includes('material')) icon = Package;
+    else if (cat.includes('deliver')) icon = Truck;
     else if (t.type === 'expense') icon = ShoppingCart;
     else icon = TrendingUp;
 
     return {
-      title: t.type === 'revenue' 
-        ? `Sold ${t.quantity || 1} items` 
-        : `Bought ${t.category}`,
-      time: t.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      doc: `AI-${t.id.substring(0,4).toUpperCase()}`,
-      type: t.type === 'revenue' ? 'Revenue' : 'Expense',
+      ...t,
+      title: t.title || (t.type === 'revenue' ? 'Sales Revenue' : 'Business Expense'),
+      time: t.time || new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      doc: t.doc || `TX-${t.id.substring(0,4).toUpperCase()}`,
+      type: t.type.charAt(0).toUpperCase() + t.type.slice(1),
       amount: t.type === 'revenue' ? t.amount : -t.amount,
       icon,
       tone: t.type === 'revenue' ? 'success' : 'danger'
     } as const;
   });
-});
-
-const visibleTransactions = computed(() => {
-  const all = [...mappedAiTransactions.value, ...mockTransactions];
-  return all.slice(0, props.limit);
 });
 </script>
 
@@ -66,10 +73,13 @@ const visibleTransactions = computed(() => {
     </CardHeader>
     <CardContent class="px-5">
       <TransactionRow
-        v-for="transaction in visibleTransactions"
-        :key="`${transaction.title}-${transaction.time}`"
+        v-for="transaction in mappedTransactions"
+        :key="transaction.id"
         v-bind="transaction"
       />
+      <div v-if="mappedTransactions.length === 0" class="py-10 text-center text-muted-foreground text-xs italic">
+        No recent activity found.
+      </div>
     </CardContent>
   </Card>
 </template>

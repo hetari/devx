@@ -35,6 +35,10 @@ const currency = shallowRef("USD");
         <Button class="w-fit h-9 rounded-md text-[10px] font-black uppercase tracking-wider">SAVE CONFIGURATION</Button>
       </div>
     </section>
+
+    <section class="mt-8 landing-reveal" :style="{ animationDelay: '160ms' }">
+      <TrustDial />
+    </section>
   </div>
 </template>
 

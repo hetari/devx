@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { useAIAssistant } from '~/composables/useAIAssistant';
+import { useAgents } from '~/composables/useAgents';
 import { computed } from 'vue';
 import { CheckCircle2, XCircle } from 'lucide-vue-next';
+
+interface Props {
+  // When true, the chair sits at the same visual scale as the specialist
+  // avatars (AgentAvatar size="xl"). Use this on the chat page where the
+  // 4 robots form a single horizontal row. Default keeps the hero size.
+  compact?: boolean;
+}
+const props = withDefaults(defineProps<Props>(), { compact: false });
 
 const {
   robotState,
@@ -10,11 +19,35 @@ const {
   toggleListen,
   handleConfirmPreview,
   handleCancelPreview,
-  isSessionActive
+  isSessionActive,
+  activeAgent,
 } = useAIAssistant();
 
+const { getAgent } = useAgents();
+const chair = computed(() => getAgent('chair'));
+
+// The chair only reflects voice-session state when IT is the active agent.
+// Otherwise (a specialist is in session, or no session at all), the chair
+// stays visually idle. Without this, clicking CFO would also light up the
+// chair because both read from the same global robotState.
+const chairIsActive = computed(() => activeAgent.value === 'chair' && isSessionActive.value);
+const chairState = computed(() => (chairIsActive.value ? robotState.value : 'idle'));
+
+// The chair button always switches to the chair persona — never inherits
+// whichever specialist might currently be active.
+const onChairClick = () => toggleListen('chair');
+
+// Chair PNG has more transparent padding than the specialist PNGs, so a
+// matching size class renders smaller. Bump one step up in compact mode
+// so the *visible* robot matches the other four.
+const robotSizeClass = computed(() =>
+  props.compact
+    ? 'size-40 md:size-48 lg:size-52'    // matches AgentAvatar size="xl" — fits 4-up without scroll
+    : 'size-64 md:size-80 lg:size-96'    // original hero size
+);
+
 const getMessage = computed(() => {
-  switch (robotState.value) {
+  switch (chairState.value) {
     case 'idle':
       return "مرحباً! أنا شريكك المؤسس الذكي. كيف يمكنني مساعدة عملك اليوم؟";
     case 'listening':
@@ -32,7 +65,12 @@ const getMessage = computed(() => {
 </script>
 
 <template>
-  <div class="relative flex flex-col items-center justify-center gap-12 w-full min-h-[70vh] py-10">
+  <div
+    :class="[
+      'relative flex flex-col items-center justify-center w-full',
+      compact ? 'gap-4' : 'gap-12 min-h-[70vh] py-10'
+    ]"
+  >
     <!-- Error Bubble -->
     <Transition
       enter-active-class="animate-in fade-in slide-in-from-top-4 duration-300"
@@ -87,38 +125,52 @@ const getMessage = computed(() => {
       enter-active-class="animate-in fade-in slide-in-from-bottom-4 duration-300"
       leave-active-class="animate-out fade-out slide-in-from-bottom-4 duration-300"
     >
-      <div v-show="!previewData && (isSessionActive || robotState !== 'idle')" class="relative w-full max-w-lg rounded-3xl border border-white/10 bg-background/80 p-6 shadow-2xl backdrop-blur-xl text-center" dir="rtl">
+      <div v-show="!previewData && chairIsActive" class="relative w-full max-w-lg rounded-3xl border border-white/10 bg-background/80 p-6 shadow-2xl backdrop-blur-xl text-center" dir="rtl">
         <p class="text-lg md:text-xl font-medium leading-relaxed">{{ getMessage }}</p>
         <!-- Triangle pointing down to the robot -->
         <div class="absolute -bottom-3 left-1/2 w-6 h-6 -translate-x-1/2 rotate-45 border-b border-r border-white/10 bg-background/80 backdrop-blur-xl"></div>
       </div>
     </Transition>
 
-    <!-- Robot Visuals -->
+    <!-- Robot + label, mirroring AgentAvatar's structure so the chair sits
+         visually as a peer of the specialists in the chat page row. -->
+    <div :class="['flex flex-col items-center', compact ? 'gap-2' : '']">
     <button
-      class="group relative flex size-64 md:size-80 lg:size-96 items-center justify-center transition-transform hover:scale-105 active:scale-95 cursor-pointer animate-float"
-      :aria-label="robotState === 'listening' ? 'Stop Listening' : 'Start Voice Assistant'"
-      @click="toggleListen"
+      :class="[
+        'group relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95 cursor-pointer animate-float',
+        robotSizeClass
+      ]"
+      :aria-label="chairState === 'listening' ? 'Stop Listening' : 'Start Voice Assistant'"
+      @click="onChairClick"
     >
-      <!-- Glow rings -->
-      <div class="absolute inset-0 rounded-full transition-all duration-500 blur-2xl opacity-40" 
+      <!-- Glow rings — driven by chairState so the chair stays calm when a
+           specialist is the one in session. -->
+      <div class="absolute inset-0 rounded-full transition-all duration-500 blur-2xl opacity-40"
         :class="{
-          'bg-blue-500 scale-100': robotState === 'idle',
-          'bg-blue-400 scale-110 animate-pulse': robotState === 'listening',
-          'bg-purple-500 scale-110 animate-spin-slow': robotState === 'understanding',
-          'bg-orange-500 scale-105 animate-pulse': robotState === 'preview_ready',
-          'bg-green-500 scale-100': robotState === 'saved'
+          'bg-blue-500 scale-100': chairState === 'idle',
+          'bg-blue-400 scale-110 animate-pulse': chairState === 'listening',
+          'bg-purple-500 scale-110 animate-spin-slow': chairState === 'understanding',
+          'bg-orange-500 scale-105 animate-pulse': chairState === 'preview_ready',
+          'bg-green-500 scale-100': chairState === 'saved'
         }"
       ></div>
 
       <!-- Robot Images overlapping -->
       <div class="relative w-full h-full pointer-events-none">
-        <img src="/robot/0.png" alt="Idle" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="robotState === 'idle' ? 'opacity-100' : 'opacity-0'" />
-        <img src="/robot/2.png" alt="Listening" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="robotState === 'listening' ? 'opacity-100' : 'opacity-0'" />
-        <img src="/robot/2.png" alt="Understanding" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="robotState === 'understanding' ? 'opacity-100' : 'opacity-0'" />
-        <img src="/robot/3.png" alt="Preview/Saved" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="(robotState === 'preview_ready' || robotState === 'saved') ? 'opacity-100' : 'opacity-0'" />
+        <img src="/robot/0.png" alt="Idle" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="chairState === 'idle' ? 'opacity-100' : 'opacity-0'" />
+        <img src="/robot/2.png" alt="Listening" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="chairState === 'listening' ? 'opacity-100' : 'opacity-0'" />
+        <img src="/robot/2.png" alt="Understanding" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="chairState === 'understanding' ? 'opacity-100' : 'opacity-0'" />
+        <img src="/robot/3.png" alt="Preview/Saved" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="(chairState === 'preview_ready' || chairState === 'saved') ? 'opacity-100' : 'opacity-0'" />
       </div>
     </button>
+
+    <!-- Label below the chair, only in compact mode (the chat-page row).
+         In hero mode the speech bubble already names the agent. -->
+    <div v-if="compact" class="text-center">
+      <div class="text-sm font-bold leading-tight">{{ chair.arabicName }}</div>
+      <div class="text-[10px] uppercase tracking-wider opacity-60">{{ chair.displayName }}</div>
+    </div>
+    </div>
   </div>
 </template>
 

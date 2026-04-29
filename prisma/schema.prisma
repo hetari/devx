@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  title       String
+  type        String   // "revenue" | "expense"
+  amount      Float
+  category    String
+  description String?
+  date        DateTime @default(now())
+  time        String?  // For display (e.g. "6:30 PM")
+  doc         String?  // For display (e.g. "Invoice #INV-1052")
+}
+
+model Insight {
+  id            String   @id @default(cuid())
+  whatHappened  String
+  whyItMatters  String
+  whatItMeans   String?
+  whatToDo      String
+  timestamp     DateTime @default(now())
+  category      String?  // e.g. "Sales", "Cash Flow"
+}
+
+model Goal {
+  id        String   @id @default(cuid())
+  title     String
+  current   Float
+  target    Float
+  unit      String?  // e.g. "$"
+  tone      String   @default("primary") // "success" | "danger" | "info" | "primary"
+  icon      String?  // Lucide icon name
+  status    String   @default("active") // "active" | "completed"
+  createdAt DateTime @default(now())
+}
+
+model BusinessSettings {
+  id          String  @id @default("config")
+  companyName String? @default("My Business")
+  industry    String?
+  mission     String?
+  currency    String  @default("USD")
+}
+
+// ----- AI Co-Founder Boardroom additions -----
+
+// Memory carried across sessions, per agent.
+// type: "episodic" | "semantic" | "decision"
+model AgentMemory {
+  id        String   @id @default(cuid())
+  agent     String   // "chair" | "cfo" | "cmo" | "operator"
+  type      String
+  content   String
+  embedding String?  // JSON-encoded float[] for semantic memory
+  relatedId String?  // free-form ref to a Transaction/Decision/etc.
+  createdAt DateTime @default(now())
+
+  @@index([agent, type])
+  @@index([createdAt])
+}
+
+// Each agent's private watchlist of business signals.
+// Threshold breach drives initiative on the night-shift loop.
+model AgendaItem {
+  id            String    @id @default(cuid())
+  agent         String
+  watchTarget   String    // e.g. "cash_runway_days", "ar_aging_60plus", "gross_margin_pct"
+  thresholdJson String    // e.g. {"op": "<", "value": 30}
+  currentValue  Float?
+  status        String    @default("ok") // "ok" | "warning" | "breached"
+  lastChecked   DateTime?
+  enabled       Boolean   @default(true)
+
+  @@index([agent])
+}
+
+// Things the agents did or noticed in the background.
+// eventType: "note" | "brief" | "action" | "convene"
+model BackgroundEvent {
+  id          String   @id @default(cuid())
+  agent       String
+  eventType   String
+  topic       String
+  payloadJson String   // arbitrary structured data per event type
+  actionTaken String?  // human-readable description if eventType == "action"
+  status      String   @default("pending") // "pending" | "approved" | "rejected" | "executed"
+  createdAt   DateTime @default(now())
+
+  @@index([status, createdAt])
+  @@index([agent])
+}
+
+// Per-agent caps on what the agent may do without approval.
+model AutonomyBudget {
+  id                    String  @id @default(cuid())
+  agent                 String
+  actionType            String  // e.g. "send_invoice_reminder", "draft_post", "flag_reorder"
+  dailyCapAmount        Float?
+  dailyCapCount         Int?
+  monthlyCapAmount      Float?
+  monthlyCapCount       Int?
+  requiresApprovalAbove Float?
+  enabled               Boolean @default(true)
+  approvalRate          Float?  // earned trust over the rolling window, 0..1
+
+  @@unique([agent, actionType])
+}
+
+// One Boardroom convening. The conversation, the stances, and the user's verdict.
+model BoardroomSession {
+  id             String   @id @default(cuid())
+  trigger        String   // "user" | "background" | "scheduled"
+  topic          String
+  agentsInvolved String   // JSON array of agent IDs
+  stancesJson    String   // each agent's opinion + reasoning
+  userDecision   String?  // "approved:cmo" | "override" | "dismissed"
+  overrideText   String?
+  outcomeSummary String?
+  createdAt      DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// A scheduled or generated briefing the user reads.
+// kind: "monday_standup" | "friday_review" | "morning"
+model Briefing {
+  id        String    @id @default(cuid())
+  kind      String
+  date      DateTime  @default(now())
+  itemsJson String    // structured per-agent items
+  pdfPath   String?
+  readAt    DateTime?
+
+  @@index([kind, date])
+}

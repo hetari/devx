@@ -7,6 +7,29 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Target, Percent, ShoppingCart } from "lucide-vue-next";
+
+const iconMap: Record<string, any> = { Target, Percent, ShoppingCart };
+
+const { data: dbGoals, refresh } = await useFetch('/api/goals');
+
+// Re-fetch when AI saves data
+const { robotState } = useAIAssistantState();
+watch(robotState, (newState) => {
+  if (newState === 'saved') {
+    refresh();
+  }
+});
+
+const goals = computed(() => {
+  if (!dbGoals.value) return [];
+  return dbGoals.value.map((goal: any) => ({
+    ...goal,
+    progress: Math.min(Math.round((goal.current / goal.target) * 100), 100),
+    value: `$${goal.current} / $${goal.target}`,
+    icon: iconMap[goal.icon] || Target
+  }));
+});
 </script>
 
 <template>
@@ -22,7 +45,7 @@ import {
     <CardContent class="grid gap-6 px-5">
       <div
         v-for="goal in goals"
-        :key="goal.title"
+        :key="goal.id"
         class="grid grid-cols-[2.75rem_1fr_auto] items-center gap-3"
       >
         <ToneIcon :icon="goal.icon" :tone="goal.tone" />
@@ -41,6 +64,9 @@ import {
           </div>
         </div>
         <strong class="text-sm font-black">{{ goal.progress }}%</strong>
+      </div>
+      <div v-if="goals.length === 0" class="py-4 text-center text-muted-foreground text-[10px] italic uppercase tracking-widest">
+        No active goals.
       </div>
     </CardContent>
   </Card>

@@ -47,6 +47,10 @@ useHead({
         </span>
       </NuxtLink>
     </SidebarInset>
+
+    <!-- Global Boardroom overlay — appears whenever a session is convened
+         (from voice tool call, manual trigger, scheduled tick, etc.) -->
+    <Boardroom />
   </SidebarProvider>
 </template>
 
