@@ -42,6 +42,15 @@ export const useAIAssistant = () => {
   const inputAudioCtx = shallowRef<AudioContext | null>(null);
   const outputAudioCtx = shallowRef<AudioContext | null>(null);
   const outputNode = shallowRef<GainNode | null>(null);
+  // Hidden HTMLAudioElement that actually drives the OS speaker. We pipe
+  // WebAudio output into a MediaStream and play it here instead of going
+  // straight to AudioContext.destination — this keeps playback on the OS
+  // default media output device even when getUserMedia is holding a mic
+  // on a *different* device. Without this, Chrome on Windows routes the
+  // AudioContext destination to whatever device owns the mic, which is
+  // why audio was only audible when the BT Hands-Free profile was the
+  // default (it's a single duplex device, so mic and speaker matched).
+  const outputAudioEl = shallowRef<HTMLAudioElement | null>(null);
   const nextStartTime = ref<number>(0);
   const sources = shallowRef<Set<AudioBufferSourceNode>>(new Set());
   const activeStream = shallowRef<MediaStream | null>(null);
@@ -60,14 +69,29 @@ export const useAIAssistant = () => {
     }
     if (!outputAudioCtx.value) {
       // latencyHint 'playback' tells the OS this context is for output and
-      // should not be ducked by echo-cancellation pipelines. Without this,
-      // some browsers silence speaker output whenever a mic stream is open.
+      // should not be ducked by echo-cancellation pipelines.
       outputAudioCtx.value = new (window.AudioContext || (window as any).webkitAudioContext)({
         sampleRate: 24000,
         latencyHint: 'playback',
       });
       outputNode.value = outputAudioCtx.value.createGain();
-      outputNode.value.connect(outputAudioCtx.value.destination);
+
+      // Route output through a MediaStreamDestination + HTMLAudioElement
+      // instead of AudioContext.destination. The audio element gets played
+      // through the OS default media output (speakers / Stereo BT / etc.)
+      // independently of whichever device the mic capture is using. This
+      // is what frees Windows users from having to set the BT Hands-Free
+      // profile as default just to hear the agent.
+      const streamDest = outputAudioCtx.value.createMediaStreamDestination();
+      outputNode.value.connect(streamDest);
+
+      const el = new Audio();
+      el.autoplay = true;
+      el.srcObject = streamDest.stream;
+      // Some Chrome builds need an explicit play() after srcObject is set;
+      // failures are swallowed because autoplay handles the typical case.
+      el.play().catch(() => {});
+      outputAudioEl.value = el;
     }
     // Resume contexts in case the browser auto-suspended them (Chrome will do
     // this if the page hasn't had a recent user gesture).
