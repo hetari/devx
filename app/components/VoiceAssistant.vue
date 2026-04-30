@@ -17,7 +17,6 @@ const {
 const speechContent = ref("");
 const isProcessing = ref(false);
 const {
-  isSupported: isSynthesisSupported,
   speak,
   stop: stopSpeaking,
   isPlaying,

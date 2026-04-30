@@ -1,9 +1,28 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createError, readBody } from "h3";
+import { generateGeminiText } from "../ai/_gemini";
+
+function getGeminiStatusMessage(error: unknown) {
+  const message =
+    error instanceof Error
+      ? error.message
+      : "Failed to generate response from Gemini";
+
+  if (message.includes("503") || message.toLowerCase().includes("high demand")) {
+    return {
+      statusCode: 503,
+      statusMessage: "Gemini is temporarily busy. Please try again in a moment.",
+    };
+  }
+
+  return {
+    statusCode: 500,
+    statusMessage: message,
+  };
+}
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig();
-  const body = await readBody(event);
-  const { prompt } = body;
+  const body = await readBody<{ prompt?: unknown }>(event);
+  const prompt = typeof body.prompt === "string" ? body.prompt.trim() : "";
 
   if (!prompt) {
     throw createError({
@@ -12,29 +31,21 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Log the request
-  console.log("[Gemini Voice] Request:", prompt);
-
   try {
-    const genAI = new GoogleGenerativeAI(config.geminiApiKey);
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash",
-      });
+    const text = await generateGeminiText(`
+You are Atule, an AI co-founder for a small owner-led business.
+The user is speaking by voice, so keep the answer natural, concise, and easy to hear.
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
-    // Log the response
-    console.log("[Gemini Voice] Response:", text);
+User voice command: ${prompt}
+`);
 
     return { text };
   } catch (error: unknown) {
-    const typedError = error as ErrorEvent;
-    console.error("[Gemini Voice] Error:", typedError);
+    const { statusCode, statusMessage } = getGeminiStatusMessage(error);
+
     throw createError({
-      statusCode: 500,
-      statusMessage: typedError?.message || "Failed to generate response from Gemini",
+      statusCode,
+      statusMessage,
     });
   }
 });
