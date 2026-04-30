@@ -134,8 +134,9 @@ export const useAIAssistant = () => {
   };
 
   // Tool definitions split by which agent should have access. Chair has the
-  // full set (it captures, saves, convenes). Specialists are read-only — they
-  // can look up business data and search the market, but cannot mutate state.
+  // full set (it captures, saves, convenes, navigates, runs night-shift,
+  // generates briefings). Specialists share the read-only data tools so
+  // they can answer questions about real numbers but cannot mutate state.
   const TOOL_GET_SUMMARY = {
     name: 'get_business_summary',
     description: 'Get current real-time financial stats (revenue, expenses, profit).',
@@ -147,6 +148,31 @@ export const useAIAssistant = () => {
       type: 'OBJECT' as any,
       properties: { query: { type: 'STRING' as any } },
       required: ['query'],
+    },
+  };
+  // Lists recent transactions. All agents may call this.
+  const TOOL_LIST_TRANSACTIONS = {
+    name: 'list_transactions',
+    description:
+      'List recent transactions (revenues and expenses). Use to answer questions about specific sales, spending categories, or recent activity.',
+    parameters: {
+      type: 'OBJECT' as any,
+      properties: {
+        limit: { type: 'NUMBER' as any, description: 'Max transactions to return. Default 10, max 50.' },
+        type: { type: 'STRING' as any, description: 'Filter by type: "revenue" or "expense". Omit for both.' },
+      },
+    },
+  };
+  // Lists recent insights. All agents may call this.
+  const TOOL_LIST_INSIGHTS = {
+    name: 'list_insights',
+    description:
+      'List the most recent strategic insights saved to the business. Use when the user asks "what did we decide" or "what was your last advice".',
+    parameters: {
+      type: 'OBJECT' as any,
+      properties: {
+        limit: { type: 'NUMBER' as any, description: 'Max insights to return. Default 5, max 20.' },
+      },
     },
   };
   const CHAIR_ONLY_TOOLS = [
@@ -217,6 +243,32 @@ export const useAIAssistant = () => {
         required: ['topic'],
       },
     },
+    {
+      name: 'navigate_to',
+      description:
+        "Navigates the user to a different page in the app. Use when the user asks to see something specific (e.g. 'show me the dashboard', 'open transactions', 'go to settings').",
+      parameters: {
+        type: 'OBJECT' as any,
+        properties: {
+          page: {
+            type: 'STRING' as any,
+            description:
+              "Page id. One of: 'dashboard', 'transactions', 'goals', 'insights', 'settings', 'reports', 'learn', 'chat'.",
+          },
+        },
+        required: ['page'],
+      },
+    },
+    {
+      name: 'run_night_shift_now',
+      description:
+        'Triggers the Night Shift loop immediately so each specialist agent reviews the business and produces fresh background events (drafts, alerts, briefs). Use when the user asks the agents to "run a check", "see what you find", or wants the dashboard feed refreshed.',
+    },
+    {
+      name: 'generate_weekly_briefing',
+      description:
+        'Opens the weekly board-style briefing as a printable report in a new tab. Use when the user asks for "the weekly report", "Friday briefing", or wants to see a summary they can print or share.',
+    },
   ];
 
   // Open / close / switch the live voice session.
@@ -269,8 +321,14 @@ export const useAIAssistant = () => {
       const agent = getAgent(activeAgent.value);
       const isChair = activeAgent.value === 'chair';
       const functionDeclarations = isChair
-        ? [TOOL_GET_SUMMARY, ...CHAIR_ONLY_TOOLS, TOOL_SEARCH_TRENDS]
-        : [TOOL_GET_SUMMARY, TOOL_SEARCH_TRENDS];
+        ? [
+            TOOL_GET_SUMMARY,
+            TOOL_LIST_TRANSACTIONS,
+            TOOL_LIST_INSIGHTS,
+            ...CHAIR_ONLY_TOOLS,
+            TOOL_SEARCH_TRENDS,
+          ]
+        : [TOOL_GET_SUMMARY, TOOL_LIST_TRANSACTIONS, TOOL_LIST_INSIGHTS, TOOL_SEARCH_TRENDS];
 
       const sessionPromise = ai.live.connect({
         model: 'gemini-2.5-flash-native-audio-preview-12-2025',
@@ -348,6 +406,72 @@ export const useAIAssistant = () => {
                   response = {
                     result: `Boardroom convened for topic "${topic}". The board is now debating in front of the user.`,
                   };
+                } else if (fc.name === 'list_transactions') {
+                  const args = fc.args as any;
+                  const limit = Math.min(Math.max(Number(args?.limit) || 10, 1), 50);
+                  const params = new URLSearchParams({ limit: String(limit) });
+                  if (args?.type === 'revenue' || args?.type === 'expense') {
+                    params.set('type', args.type);
+                  }
+                  try {
+                    const txs = await $fetch(`/api/transactions?${params.toString()}`);
+                    response = { result: JSON.stringify(txs) };
+                  } catch (err: any) {
+                    response = { result: `Could not load transactions: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'list_insights') {
+                  const args = fc.args as any;
+                  const limit = Math.min(Math.max(Number(args?.limit) || 5, 1), 20);
+                  try {
+                    const insts = await $fetch(`/api/insights?limit=${limit}`);
+                    response = { result: JSON.stringify(insts) };
+                  } catch (err: any) {
+                    response = { result: `Could not load insights: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'navigate_to') {
+                  // Push to the page the user asked for. We reject unknown
+                  // page ids rather than crash on a bad route.
+                  const args = fc.args as any;
+                  const allowed: Record<string, string> = {
+                    dashboard: '/dashboard',
+                    transactions: '/transactions',
+                    goals: '/goals',
+                    insights: '/insights',
+                    settings: '/settings',
+                    reports: '/reports',
+                    learn: '/learn',
+                    chat: '/chat',
+                  };
+                  const target = allowed[String(args?.page ?? '').toLowerCase()];
+                  if (!target) {
+                    response = { result: `Unknown page "${args?.page}". Allowed: ${Object.keys(allowed).join(', ')}.` };
+                  } else {
+                    try {
+                      const router = useRouter();
+                      await router.push(target);
+                      response = { result: `Navigated to ${target}.` };
+                    } catch (err: any) {
+                      response = { result: `Navigation failed: ${err?.message ?? 'unknown'}` };
+                    }
+                  }
+                } else if (fc.name === 'run_night_shift_now') {
+                  // Trigger one tick of the night-shift loop. Each specialist
+                  // agent reviews the snapshot and emits 0-3 BackgroundEvents.
+                  try {
+                    const result = await $fetch('/api/night-shift/tick', { method: 'POST', body: {} });
+                    response = { result: JSON.stringify(result) };
+                  } catch (err: any) {
+                    response = { result: `Night shift run failed: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'generate_weekly_briefing') {
+                  // Open the printable HTML briefing in a new tab so the user
+                  // can review/print/save as PDF.
+                  if (typeof window !== 'undefined') {
+                    window.open('/api/briefings/weekly', '_blank', 'noopener');
+                    response = { result: 'Weekly briefing opened in a new tab.' };
+                  } else {
+                    response = { result: 'Briefing endpoint is at /api/briefings/weekly.' };
+                  }
                 }
 
                 if (fc.id) {
