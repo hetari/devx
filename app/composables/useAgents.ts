@@ -207,9 +207,87 @@ export const useAgents = () => {
     return agent.asset[state] || agent.asset.idle;
   };
 
-  // Speak a piece of text in this agent's voice using browser SpeechSynthesis.
-  // Returns a promise that resolves when speech ends (or immediately if unsupported).
-  const speakAs = (id: AgentId, text: string): Promise<void> => {
+  // ---------- Speech playback ----------
+
+  // Active TTS audio element and tracking, so stopSpeaking() can cancel an
+  // in-flight Gemini playback as well as a browser SpeechSynthesis one.
+  let currentTtsAudio: HTMLAudioElement | null = null;
+  let currentTtsObjectUrl: string | null = null;
+
+  // Wrap raw 16-bit PCM in a minimal WAV container so an HTMLAudioElement
+  // can play it directly. Gemini TTS returns mono 16-bit PCM at 24kHz by
+  // default; the container header is the only thing the browser needs.
+  const pcmToWavBlob = (pcm: Uint8Array, sampleRate: number): Blob => {
+    const numChannels = 1;
+    const bitsPerSample = 16;
+    const byteRate = (sampleRate * numChannels * bitsPerSample) / 8;
+    const blockAlign = (numChannels * bitsPerSample) / 8;
+    const dataSize = pcm.byteLength;
+    const buffer = new ArrayBuffer(44 + dataSize);
+    const view = new DataView(buffer);
+    const writeStr = (offset: number, str: string) => {
+      for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+    };
+    writeStr(0, 'RIFF');
+    view.setUint32(4, 36 + dataSize, true);
+    writeStr(8, 'WAVE');
+    writeStr(12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);              // PCM format
+    view.setUint16(22, numChannels, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, byteRate, true);
+    view.setUint16(32, blockAlign, true);
+    view.setUint16(34, bitsPerSample, true);
+    writeStr(36, 'data');
+    view.setUint32(40, dataSize, true);
+    new Uint8Array(buffer, 44).set(pcm);
+    return new Blob([buffer], { type: 'audio/wav' });
+  };
+
+  const base64ToBytes = (b64: string): Uint8Array => {
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  };
+
+  // Play through Gemini TTS. Resolves on playback end; rejects on error so
+  // the caller can fall back to SpeechSynthesis.
+  const speakViaGemini = async (id: AgentId, text: string): Promise<void> => {
+    const res = await $fetch<{ audioBase64: string; sampleRate: number; mimeType: string }>(
+      '/api/boardroom/tts',
+      { method: 'POST', body: { agentId: id, text } }
+    );
+    const pcm = base64ToBytes(res.audioBase64);
+    const blob = pcmToWavBlob(pcm, res.sampleRate ?? 24000);
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+
+    currentTtsAudio = audio;
+    currentTtsObjectUrl = url;
+
+    await new Promise<void>((resolve, reject) => {
+      audio.onended = () => {
+        if (currentTtsAudio === audio) currentTtsAudio = null;
+        URL.revokeObjectURL(url);
+        if (currentTtsObjectUrl === url) currentTtsObjectUrl = null;
+        resolve();
+      };
+      audio.onerror = () => {
+        if (currentTtsAudio === audio) currentTtsAudio = null;
+        URL.revokeObjectURL(url);
+        if (currentTtsObjectUrl === url) currentTtsObjectUrl = null;
+        reject(new Error('audio playback error'));
+      };
+      audio.play().catch(reject);
+    });
+  };
+
+  // Browser-TTS fallback when Gemini TTS fails (quota, model unavailable,
+  // network). Picks an Arabic voice when one is installed and biases pitch/
+  // rate per agent so each still sounds different even on the fallback.
+  const speakViaBrowser = (id: AgentId, text: string): Promise<void> => {
     return new Promise((resolve) => {
       if (typeof window === 'undefined' || !window.speechSynthesis) {
         resolve();
@@ -228,7 +306,29 @@ export const useAgents = () => {
     });
   };
 
+  // Public: speak a stance in the agent's voice. Tries Gemini TTS first
+  // (matches the chair's voice quality), falls back to browser
+  // SpeechSynthesis if anything goes wrong.
+  const speakAs = async (id: AgentId, text: string): Promise<void> => {
+    if (typeof window === 'undefined') return;
+    try {
+      await speakViaGemini(id, text);
+    } catch (err) {
+      console.warn(`[speakAs] Gemini TTS failed for ${id}, using browser fallback:`, err);
+      await speakViaBrowser(id, text);
+    }
+  };
+
   const stopSpeaking = () => {
+    // Cancel an in-flight Gemini TTS playback if any.
+    if (currentTtsAudio) {
+      try { currentTtsAudio.pause(); } catch { /* noop */ }
+      currentTtsAudio = null;
+    }
+    if (currentTtsObjectUrl) {
+      URL.revokeObjectURL(currentTtsObjectUrl);
+      currentTtsObjectUrl = null;
+    }
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
