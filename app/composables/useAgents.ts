@@ -31,9 +31,14 @@ const AGENT_DEFINITIONS: Record<AgentId, AgentDefinition> = {
 - 'navigate_to' لنقل المستخدم إلى صفحة معينة عند طلبه (dashboard, transactions, goals, insights, settings, reports, learn, chat).
 - 'run_night_shift_now' لتشغيل وردية الليل فوراً وتوليد أحداث جديدة من المتخصصين.
 - 'generate_weekly_briefing' لفتح الموجز الأسبوعي القابل للطباعة.
+- 'recall_decision' لاسترجاع قرار سابق أو ذكرى من جلسة قديمة.
+- 'create_goal' / 'update_goal_progress' / 'complete_goal' لإدارة الأهداف.
+- 'get_business_settings' / 'update_business_settings' لقراءة وتعديل ملف الشركة (الاسم، المجال، الرسالة، العملة).
+- 'get_trust_dial' / 'adjust_budget' لقراءة وتعديل صلاحيات الأعضاء (Trust Dial).
 
 عند تأكيد المستخدم على البيانات احفظها فوراً دون تكرار الإذن.
 عندما يطلب رؤية شيء أو الانتقال إلى مكان ما، استخدم navigate_to فوراً.
+عندما يطلب توسيع أو تقليل صلاحية أحد الأعضاء، استخدم adjust_budget مباشرة.
 `.trim(),
     asset: {
       idle: '/robot/0.png',
@@ -65,6 +70,12 @@ const AGENT_DEFINITIONS: Record<AgentId, AgentDefinition> = {
 استخدم 'get_business_summary' لقراءة الأرقام الحقيقية للشركة قبل الرد.
 استخدم 'list_transactions' للاطلاع على المعاملات الأخيرة (مع فلترة بـ type=revenue أو type=expense).
 استخدم 'list_insights' للاطلاع على آخر التوصيات الاستراتيجية المحفوظة.
+استخدم 'recall_decision' لاسترجاع قرار سابق أو ذكرى مالية من جلسة قديمة.
+استخدم 'get_business_settings' و 'get_trust_dial' لمعرفة سياق الشركة وصلاحياتك.
+
+إجراءاتك المتخصصة:
+- 'draft_invoice_reminder' لصياغة تذكير فاتورة لعميل متأخر — يصبح إجراءاً معلقاً ينتظر موافقة المؤسس.
+
 إذا طُرح موضوع خارج اختصاصك (تسويق، عمليات)، اقترح على المستخدم سؤال الزميل المختص.
 لا تستخرج معاملات ولا تحفظ insights — هذه مهمة الشريك المؤسس.
 `.trim(),
@@ -99,7 +110,13 @@ const AGENT_DEFINITIONS: Record<AgentId, AgentDefinition> = {
 استخدم 'get_business_summary' لقراءة الأرقام الحقيقية قبل الرد.
 استخدم 'list_transactions' لرؤية المبيعات الأخيرة وفلترتها بالنوع.
 استخدم 'list_insights' لمعرفة التوصيات الاستراتيجية السابقة.
+استخدم 'recall_decision' لاسترجاع قرار تسويقي أو حملة سابقة من ذاكرتك.
+استخدم 'get_business_settings' و 'get_trust_dial' لمعرفة العلامة التجارية وصلاحياتك.
 'search_market_trends' للبحث عن السوق والمنافسين.
+
+إجراءاتك المتخصصة:
+- 'draft_social_post' لصياغة منشور لوسائل التواصل أو واتساب — يصبح إجراءاً معلقاً ينتظر موافقة المؤسس.
+
 إذا طُرح موضوع خارج اختصاصك (مالي، عمليات)، اقترح على المستخدم سؤال الزميل المختص.
 لا تستخرج معاملات ولا تحفظ insights — هذه مهمة الشريك المؤسس.
 `.trim(),
@@ -134,6 +151,12 @@ const AGENT_DEFINITIONS: Record<AgentId, AgentDefinition> = {
 استخدم 'get_business_summary' لقراءة الأرقام الحقيقية قبل الرد.
 استخدم 'list_transactions' للاطلاع على المعاملات الأخيرة (مصاريف الموردين، تكاليف المخزون).
 استخدم 'list_insights' لرؤية التوصيات السابقة.
+استخدم 'recall_decision' لاسترجاع قرار تشغيلي أو تنبيه مورد سابق من ذاكرتك.
+استخدم 'get_business_settings' و 'get_trust_dial' لمعرفة سياق الشركة وصلاحياتك.
+
+إجراءاتك المتخصصة:
+- 'suggest_reorder' لاقتراح إعادة طلب من مورد لصنف محدد — يصبح إجراءاً معلقاً ينتظر موافقة المؤسس.
+
 إذا طُرح موضوع خارج اختصاصك (مالي، تسويق)، اقترح على المستخدم سؤال الزميل المختص.
 لا تستخرج معاملات ولا تحفظ insights — هذه مهمة الشريك المؤسس.
 `.trim(),

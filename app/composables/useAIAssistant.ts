@@ -175,6 +175,78 @@ export const useAIAssistant = () => {
       },
     },
   };
+  // Recall this agent's prior decisions / lessons / episodes by topic substring.
+  // Available to all agents — each one queries its OWN slice of memory.
+  const TOOL_RECALL_DECISION = {
+    name: 'recall_decision',
+    description:
+      'Recall what was previously decided, learned, or witnessed about a topic. Searches your own agent memory by substring. Use when the user references past conversations or asks "did we talk about this before".',
+    parameters: {
+      type: 'OBJECT' as any,
+      properties: {
+        topic: { type: 'STRING' as any, description: 'Keyword(s) to search inside your prior memory entries. Supports Arabic.' },
+        limit: { type: 'NUMBER' as any, description: 'Max results. Default 5, max 20.' },
+      },
+      required: ['topic'],
+    },
+  };
+  const TOOL_GET_SETTINGS = {
+    name: 'get_business_settings',
+    description: 'Read the business profile (company name, industry, mission, currency).',
+  };
+  const TOOL_GET_TRUST_DIAL = {
+    name: 'get_trust_dial',
+    description: 'Read the autonomy budgets and earned trust per agent (used to answer "how much can the CMO spend on her own").',
+  };
+
+  // Per-specialist domain actions. Each tool creates a *pending* BackgroundEvent
+  // that surfaces in the dashboard's NightShiftFeed for the user to approve.
+  const TOOL_DRAFT_INVOICE_REMINDER = {
+    name: 'draft_invoice_reminder',
+    description:
+      'CFO only. Draft an invoice-reminder message for a customer with an overdue invoice. Creates a pending action the user must approve before sending.',
+    parameters: {
+      type: 'OBJECT' as any,
+      properties: {
+        customer: { type: 'STRING' as any, description: 'Customer name in Arabic.' },
+        amount: { type: 'NUMBER' as any, description: 'Outstanding amount in the business currency.' },
+        subject: { type: 'STRING' as any, description: 'Short Arabic subject line.' },
+        body: { type: 'STRING' as any, description: 'Full Arabic message body for the reminder.' },
+      },
+      required: ['customer', 'amount', 'body'],
+    },
+  };
+  const TOOL_DRAFT_SOCIAL_POST = {
+    name: 'draft_social_post',
+    description:
+      'CMO only. Draft a social-media or messaging post (≤280 chars). Creates a pending action the user must approve before publishing.',
+    parameters: {
+      type: 'OBJECT' as any,
+      properties: {
+        channel: { type: 'STRING' as any, description: 'Suggested channel: instagram, whatsapp, x, generic.' },
+        body: { type: 'STRING' as any, description: 'The post text in Arabic, ≤280 chars.' },
+        hashtags: { type: 'STRING' as any, description: 'Optional space-separated hashtags.' },
+      },
+      required: ['body'],
+    },
+  };
+  const TOOL_SUGGEST_REORDER = {
+    name: 'suggest_reorder',
+    description:
+      'Operator only. Suggest a supplier reorder for an inventory item. Creates a pending action the user must approve before placing the order.',
+    parameters: {
+      type: 'OBJECT' as any,
+      properties: {
+        item: { type: 'STRING' as any, description: 'Inventory item name in Arabic.' },
+        quantity: { type: 'NUMBER' as any, description: 'How much to reorder.' },
+        estimatedCost: { type: 'NUMBER' as any, description: 'Estimated total cost in the business currency.' },
+        supplier: { type: 'STRING' as any, description: 'Optional supplier name.' },
+        reason: { type: 'STRING' as any, description: 'One-line reason in Arabic.' },
+      },
+      required: ['item', 'quantity'],
+    },
+  };
+
   const CHAIR_ONLY_TOOLS = [
     {
       name: 'extract_business_event',
@@ -269,7 +341,91 @@ export const useAIAssistant = () => {
       description:
         'Opens the weekly board-style briefing as a printable report in a new tab. Use when the user asks for "the weekly report", "Friday briefing", or wants to see a summary they can print or share.',
     },
+    {
+      name: 'create_goal',
+      description:
+        'Create a new business goal that will appear on the dashboard. Use when the user says "set me a goal", "I want to hit X by Y", or describes an aspiration.',
+      parameters: {
+        type: 'OBJECT' as any,
+        properties: {
+          title: { type: 'STRING' as any, description: 'Goal title in Arabic.' },
+          target: { type: 'NUMBER' as any, description: 'Target numeric value (revenue, units, etc.).' },
+          current: { type: 'NUMBER' as any, description: 'Optional starting progress. Default 0.' },
+          unit: { type: 'STRING' as any, description: 'Optional unit symbol. Default "$".' },
+        },
+        required: ['title', 'target'],
+      },
+    },
+    {
+      name: 'update_goal_progress',
+      description:
+        'Update progress on an existing goal. Use when the user says "we are now at X" or wants to revise the target.',
+      parameters: {
+        type: 'OBJECT' as any,
+        properties: {
+          id: { type: 'STRING' as any, description: 'The goal id.' },
+          current: { type: 'NUMBER' as any, description: 'New current value.' },
+          target: { type: 'NUMBER' as any, description: 'Optional new target.' },
+        },
+        required: ['id'],
+      },
+    },
+    {
+      name: 'complete_goal',
+      description: 'Mark a goal as completed. Use when the user says "we hit it" or wants to close it.',
+      parameters: {
+        type: 'OBJECT' as any,
+        properties: {
+          id: { type: 'STRING' as any, description: 'The goal id.' },
+        },
+        required: ['id'],
+      },
+    },
+    {
+      name: 'update_business_settings',
+      description:
+        'Update the business profile (company name, industry, mission, currency). Use when the user changes their company info.',
+      parameters: {
+        type: 'OBJECT' as any,
+        properties: {
+          companyName: { type: 'STRING' as any },
+          industry: { type: 'STRING' as any },
+          mission: { type: 'STRING' as any },
+          currency: { type: 'STRING' as any, description: 'ISO currency code, e.g. "USD", "SAR", "EGP".' },
+        },
+      },
+    },
+    {
+      name: 'adjust_budget',
+      description:
+        'Change an autonomy budget for one of the agents (the Trust Dial). Use when the user says things like "give the CMO more budget", "stop the operator from auto-reordering", "raise CFO\'s daily cap".',
+      parameters: {
+        type: 'OBJECT' as any,
+        properties: {
+          agent: { type: 'STRING' as any, description: 'Which agent: cfo, cmo, or operator.' },
+          actionType: {
+            type: 'STRING' as any,
+            description:
+              "Which action's budget. Examples: send_invoice_reminder, draft_social_post, suggest_reorder, flag_runway_risk, flag_supplier_price, pricing_opportunity.",
+          },
+          dailyCapAmount: { type: 'NUMBER' as any, description: 'New daily $ cap. Pass null to clear.' },
+          dailyCapCount: { type: 'NUMBER' as any, description: 'New daily action-count cap.' },
+          requiresApprovalAbove: { type: 'NUMBER' as any, description: 'Threshold above which user approval is required.' },
+          enabled: { type: 'BOOLEAN' as any, description: 'Toggle this budget row on/off.' },
+        },
+        required: ['agent', 'actionType'],
+      },
+    },
   ];
+
+  // Per-specialist domain actions. Each specialist gets ONLY their own
+  // domain's tool — CFO can't draft posts, Operator can't draft invoices.
+  // Keeps each agent strictly inside their character.
+  const TOOLS_PER_SPECIALIST: Record<string, any[]> = {
+    cfo: [TOOL_DRAFT_INVOICE_REMINDER],
+    cmo: [TOOL_DRAFT_SOCIAL_POST],
+    operator: [TOOL_SUGGEST_REORDER],
+  };
 
   // Open / close / switch the live voice session.
   // - Called with no arg from the chair button → uses current activeAgent.
@@ -320,15 +476,22 @@ export const useAIAssistant = () => {
       // Resolve voice + persona for whoever is now active.
       const agent = getAgent(activeAgent.value);
       const isChair = activeAgent.value === 'chair';
+      // Tool kits assembled by access tier:
+      //   SHARED_READ:  every agent can call these (read-only).
+      //   CHAIR_ONLY:   mutations + management — chair owns the founder's seat.
+      //   SPECIALIST:   one domain action per specialist (CFO drafts, CMO drafts, Operator drafts).
+      const SHARED_READ = [
+        TOOL_GET_SUMMARY,
+        TOOL_LIST_TRANSACTIONS,
+        TOOL_LIST_INSIGHTS,
+        TOOL_RECALL_DECISION,
+        TOOL_GET_SETTINGS,
+        TOOL_GET_TRUST_DIAL,
+        TOOL_SEARCH_TRENDS,
+      ];
       const functionDeclarations = isChair
-        ? [
-            TOOL_GET_SUMMARY,
-            TOOL_LIST_TRANSACTIONS,
-            TOOL_LIST_INSIGHTS,
-            ...CHAIR_ONLY_TOOLS,
-            TOOL_SEARCH_TRENDS,
-          ]
-        : [TOOL_GET_SUMMARY, TOOL_LIST_TRANSACTIONS, TOOL_LIST_INSIGHTS, TOOL_SEARCH_TRENDS];
+        ? [...SHARED_READ, ...CHAIR_ONLY_TOOLS]
+        : [...SHARED_READ, ...(TOOLS_PER_SPECIALIST[activeAgent.value] ?? [])];
 
       const sessionPromise = ai.live.connect({
         model: 'gemini-2.5-flash-native-audio-preview-12-2025',
@@ -471,6 +634,179 @@ export const useAIAssistant = () => {
                     response = { result: 'Weekly briefing opened in a new tab.' };
                   } else {
                     response = { result: 'Briefing endpoint is at /api/briefings/weekly.' };
+                  }
+                }
+
+                // ---------- Tier 2: specialist domain actions + memory ----------
+                else if (fc.name === 'draft_invoice_reminder') {
+                  const args = fc.args as any;
+                  try {
+                    const out = await $fetch('/api/agents/draft', {
+                      method: 'POST',
+                      body: {
+                        agent: 'cfo',
+                        actionType: 'draft_invoice_reminder',
+                        topic: `تذكير فاتورة لـ${args?.customer ?? '؟'} بقيمة ${args?.amount ?? '؟'}`,
+                        payload: {
+                          customer: args?.customer,
+                          amount: Number(args?.amount) || 0,
+                          subject: args?.subject ?? `تذكير بدفع الفاتورة - ${args?.customer ?? ''}`,
+                          body: args?.body ?? '',
+                        },
+                      },
+                    });
+                    response = { result: `Draft saved as pending action. ${JSON.stringify(out)}` };
+                  } catch (err: any) {
+                    response = { result: `Could not save draft: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'draft_social_post') {
+                  const args = fc.args as any;
+                  try {
+                    const out = await $fetch('/api/agents/draft', {
+                      method: 'POST',
+                      body: {
+                        agent: 'cmo',
+                        actionType: 'draft_social_post',
+                        topic: `مسودة منشور${args?.channel ? ` لـ${args.channel}` : ''}`,
+                        payload: {
+                          channel: args?.channel ?? 'generic',
+                          body: args?.body ?? '',
+                          hashtags: args?.hashtags ?? '',
+                        },
+                      },
+                    });
+                    response = { result: `Draft saved as pending action. ${JSON.stringify(out)}` };
+                  } catch (err: any) {
+                    response = { result: `Could not save draft: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'suggest_reorder') {
+                  const args = fc.args as any;
+                  try {
+                    const out = await $fetch('/api/agents/draft', {
+                      method: 'POST',
+                      body: {
+                        agent: 'operator',
+                        actionType: 'suggest_reorder',
+                        topic: `اقتراح إعادة طلب: ${args?.item ?? '؟'} × ${args?.quantity ?? '؟'}`,
+                        payload: {
+                          item: args?.item,
+                          quantity: Number(args?.quantity) || 0,
+                          estimatedCost: Number(args?.estimatedCost) || null,
+                          supplier: args?.supplier ?? null,
+                          reason: args?.reason ?? null,
+                        },
+                      },
+                    });
+                    response = { result: `Draft saved as pending action. ${JSON.stringify(out)}` };
+                  } catch (err: any) {
+                    response = { result: `Could not save draft: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'recall_decision') {
+                  // Each agent reads ITS OWN slice of memory by topic.
+                  const args = fc.args as any;
+                  const params = new URLSearchParams({
+                    agent: activeAgent.value,
+                    topic: String(args?.topic ?? ''),
+                    limit: String(Math.min(Math.max(Number(args?.limit) || 5, 1), 20)),
+                  });
+                  try {
+                    const out = await $fetch(`/api/agents/memory?${params.toString()}`);
+                    response = { result: JSON.stringify(out) };
+                  } catch (err: any) {
+                    response = { result: `Memory recall failed: ${err?.message ?? 'unknown'}` };
+                  }
+                }
+
+                // ---------- Tier 3: goals + settings + trust dial ----------
+                else if (fc.name === 'create_goal') {
+                  const args = fc.args as any;
+                  try {
+                    const out = await $fetch('/api/goals', {
+                      method: 'POST',
+                      body: {
+                        title: String(args?.title ?? 'هدف جديد'),
+                        target: Number(args?.target) || 0,
+                        current: args?.current !== undefined ? Number(args.current) : undefined,
+                        unit: args?.unit ?? '$',
+                      },
+                    });
+                    response = { result: JSON.stringify(out) };
+                  } catch (err: any) {
+                    response = { result: `Goal creation failed: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'update_goal_progress') {
+                  const args = fc.args as any;
+                  try {
+                    const out = await $fetch('/api/goals', {
+                      method: 'POST',
+                      body: {
+                        id: String(args?.id ?? ''),
+                        ...(args?.current !== undefined ? { current: Number(args.current) } : {}),
+                        ...(args?.target !== undefined ? { target: Number(args.target) } : {}),
+                      },
+                    });
+                    response = { result: JSON.stringify(out) };
+                  } catch (err: any) {
+                    response = { result: `Goal update failed: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'complete_goal') {
+                  const args = fc.args as any;
+                  try {
+                    const out = await $fetch('/api/goals', {
+                      method: 'POST',
+                      body: { id: String(args?.id ?? ''), status: 'completed' },
+                    });
+                    response = { result: JSON.stringify(out) };
+                  } catch (err: any) {
+                    response = { result: `Goal completion failed: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'get_business_settings') {
+                  try {
+                    const out = await $fetch('/api/settings/business');
+                    response = { result: JSON.stringify(out) };
+                  } catch (err: any) {
+                    response = { result: `Could not load settings: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'update_business_settings') {
+                  const args = fc.args as any;
+                  try {
+                    const out = await $fetch('/api/settings/business', {
+                      method: 'POST',
+                      body: {
+                        ...(args?.companyName !== undefined ? { companyName: args.companyName } : {}),
+                        ...(args?.industry !== undefined ? { industry: args.industry } : {}),
+                        ...(args?.mission !== undefined ? { mission: args.mission } : {}),
+                        ...(args?.currency !== undefined ? { currency: args.currency } : {}),
+                      },
+                    });
+                    response = { result: JSON.stringify(out) };
+                  } catch (err: any) {
+                    response = { result: `Settings update failed: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'get_trust_dial') {
+                  try {
+                    const out = await $fetch('/api/budgets');
+                    response = { result: JSON.stringify(out) };
+                  } catch (err: any) {
+                    response = { result: `Could not load trust dial: ${err?.message ?? 'unknown'}` };
+                  }
+                } else if (fc.name === 'adjust_budget') {
+                  const args = fc.args as any;
+                  try {
+                    const out = await $fetch('/api/budgets/upsert', {
+                      method: 'POST',
+                      body: {
+                        agent: String(args?.agent ?? '').toLowerCase(),
+                        actionType: String(args?.actionType ?? ''),
+                        ...(args?.dailyCapAmount !== undefined ? { dailyCapAmount: args.dailyCapAmount } : {}),
+                        ...(args?.dailyCapCount !== undefined ? { dailyCapCount: args.dailyCapCount } : {}),
+                        ...(args?.requiresApprovalAbove !== undefined ? { requiresApprovalAbove: args.requiresApprovalAbove } : {}),
+                        ...(args?.enabled !== undefined ? { enabled: !!args.enabled } : {}),
+                      },
+                    });
+                    response = { result: JSON.stringify(out) };
+                  } catch (err: any) {
+                    response = { result: `Trust dial update failed: ${err?.message ?? 'unknown'}` };
                   }
                 }
 
