@@ -52,13 +52,27 @@ export const useAIAssistant = () => {
 
   const initializeAudio = async () => {
     if (!inputAudioCtx.value) {
-      inputAudioCtx.value = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
+      // latencyHint 'interactive' keeps mic capture responsive.
+      inputAudioCtx.value = new (window.AudioContext || (window as any).webkitAudioContext)({
+        sampleRate: 16000,
+        latencyHint: 'interactive',
+      });
     }
     if (!outputAudioCtx.value) {
-      outputAudioCtx.value = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      // latencyHint 'playback' tells the OS this context is for output and
+      // should not be ducked by echo-cancellation pipelines. Without this,
+      // some browsers silence speaker output whenever a mic stream is open.
+      outputAudioCtx.value = new (window.AudioContext || (window as any).webkitAudioContext)({
+        sampleRate: 24000,
+        latencyHint: 'playback',
+      });
       outputNode.value = outputAudioCtx.value.createGain();
       outputNode.value.connect(outputAudioCtx.value.destination);
     }
+    // Resume contexts in case the browser auto-suspended them (Chrome will do
+    // this if the page hasn't had a recent user gesture).
+    if (inputAudioCtx.value.state === 'suspended') await inputAudioCtx.value.resume();
+    if (outputAudioCtx.value.state === 'suspended') await outputAudioCtx.value.resume();
   };
 
   const stopAllAudio = () => {
@@ -210,7 +224,19 @@ export const useAIAssistant = () => {
       if (!API_KEY) throw new Error('API Key is missing.');
 
       await initializeAudio();
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Explicitly disable browser DSP on the mic input. Default audio:true
+      // turns on echoCancellation/noiseSuppression/autoGainControl, which
+      // makes Chrome's echo-canceller silence speaker playback while the
+      // mic is hot — that's why voices were only audible through headsets.
+      // Trade-off: with loud speakers the agent may pick up its own voice;
+      // recommend modest volume or use headphones in noisy rooms.
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+        },
+      });
       activeStream.value = stream;
 
       const ai = new GoogleGenAI({ apiKey: API_KEY });
