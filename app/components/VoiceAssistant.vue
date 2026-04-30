@@ -89,6 +89,10 @@ const getMessage = computed(() => {
       <div v-if="previewData" class="w-full max-w-md rounded-2xl border border-white/20 bg-background/90 p-6 shadow-2xl backdrop-blur-xl">
         <h4 class="font-bold mb-4 text-base">Please Confirm</h4>
         
+        <div v-if="previewData.summary" class="mb-4 rounded-xl bg-primary/10 p-3 text-sm italic border-l-4 border-primary/40">
+          {{ previewData.summary }}
+        </div>
+        
         <div v-if="previewData.revenues.length > 0" class="mb-4">
           <h5 class="text-sm font-semibold text-chart-4 mb-2 uppercase tracking-wider">Revenues</h5>
           <ul class="text-sm space-y-2">

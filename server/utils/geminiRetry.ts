@@ -27,41 +27,41 @@ export interface ResilientCallOptions {
 // free-tier daily quota is dramatically higher than gemini-2.5-flash (which
 // caps at ~20 RPD on the free tier). 2.5 stays in the chain as a quality
 // upgrade for paid keys; gemini-flash-latest is the last-resort alias.
-// gemini-1.5-flash is deprecated in v1beta and intentionally NOT listed.
-const DEFAULT_MODELS = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
+const DEFAULT_MODELS = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-flash-latest'];
 
-const isTransientError = (err: any): boolean => {
+function isTransientError(err: any): boolean {
   const msg = String(err?.message ?? err ?? '');
   // 5xx, rate-limit text, model-not-available are all "try the next model".
   // 404 isn't transient on this model but IS reason to fall through to the
   // next one in the chain — caller logic handles that via the fallback walk.
   return /50[0-9]|overload|rate[-_ ]?limit|temporar|exceeded|try again|busy|429/i.test(msg);
-};
+}
 
-const isNotFoundError = (err: any): boolean => {
+function isNotFoundError(err: any): boolean {
   const msg = String(err?.message ?? err ?? '');
   return /\b404\b|not found|is not supported/i.test(msg);
-};
+}
 
 // 429 = quota exhausted. Retrying or trying a fallback model burns more
 // quota and never recovers within the same request. Bail out fast.
-const isQuotaExceeded = (err: any): boolean => {
+function isQuotaExceeded(err: any): boolean {
   const msg = String(err?.message ?? err ?? '');
   return /\b429\b|exceeded.+quota|quota.+exceeded|RESOURCE_EXHAUSTED/i.test(msg);
-};
+}
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-const normalizeContents = (
+function normalizeContents(
   c: ResilientCallOptions['contents']
-): string | Content[] => {
+): string | Array<string | Part> {
   if (typeof c === 'string') return c;
-  // Array form: build a single user message with all parts.
-  const parts: Part[] = c.map((part) =>
+  // Array form: return as a list of parts. The SDK automatically
+  // wraps this in a single 'user' message if passed directly to
+  // generateContent().
+  return c.map((part) =>
     typeof part === 'string' ? ({ text: part } as Part) : part
   );
-  return [{ role: 'user', parts }];
-};
+}
 
 export async function callGeminiResilient(
   ai: GoogleGenerativeAI,
@@ -82,7 +82,7 @@ export async function callGeminiResilient(
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        const result = await model.generateContent(normalizeContents(opts.contents) as any);
+        const result = await model.generateContent(normalizeContents(opts.contents));
         return result.response.text();
       } catch (err: any) {
         lastErr = err;
@@ -92,9 +92,9 @@ export async function callGeminiResilient(
         const isLastAttemptForModel = attempt === maxAttempts;
         const isLastModel = modelName === models[models.length - 1];
 
-        // 429 quota exhausted: stop everything immediately. Trying again will
-        // just burn more quota and fail the same way.
-        if (quota) throw err;
+        // 429 quota exhausted: stop retrying THIS model, but try the next
+        // model in the chain (fall through).
+        if (quota) break;
 
         // 404 on this model name → don't waste retries, jump to next model.
         if (notFound) break;

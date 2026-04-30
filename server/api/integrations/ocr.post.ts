@@ -22,27 +22,45 @@ interface ExtractedReceipt {
   date: string | null; // ISO yyyy-mm-dd
   category: string | null;
   currency: string | null;
-  items: Array<{ title: string; amount: number; quantity?: number }>;
+  summary: string | null;
+  isFinancial: boolean;
+  items: Array<{ title: string; amount: number; quantity?: number; type: 'expense' | 'revenue' }>;
 }
 
 const PROMPT = `
-أنت مساعد محاسبة. ستحلل صورة فاتورة (إيصال) وتستخرج البيانات التالية. أعد JSON فقط بالشكل التالي بدون أي نص آخر:
+أنت مساعد محاسبة خبير. مهمتك هي تحليل صورة مستند (فاتورة، إيصال، أو كشف حساب) واستخراج البيانات المالية بدقة.
+
+أعد JSON فقط بالشكل التالي:
 {
-  "vendor": "اسم المتجر أو null",
-  "total": رقم نهائي للمبلغ بدون عملة، أو null,
-  "currency": "USD" أو "SAR" أو "EGP" أو null,
-  "date": "YYYY-MM-DD" أو null,
-  "category": تصنيف عربي قصير مثل "مواد غذائية" أو "وقود" أو "موارد" أو null,
+  "isFinancial": true,
+  "vendor": "اسم الجهة",
+  "total": رقم الإجمالي,
+  "currency": "SAR/USD/EGP",
+  "date": "YYYY-MM-DD",
+  "category": "تصنيف مناسب",
+  "summary": "ملخص باللغة العربية",
   "items": [
-    { "title": "وصف العنصر بالعربية", "amount": رقم, "quantity": رقم اختياري }
+    { "title": "وصف", "amount": رقم, "type": "expense/revenue" }
   ]
 }
-لا تخمن. إذا لم تستطع قراءة قيمة بثقة، اجعلها null.
+
+- إذا كان المستند طويلاً جداً، استخرج أهم 20 عنصراً فقط.
+- صنف العناصر كـ expense للمصروفات و revenue للمقبوضات.
+- لا تضف أي نص خارج كائن JSON.
 `.trim();
 
 function safeJsonParse<T = unknown>(text: string): T | null {
-  const cleaned = text.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  try { return JSON.parse(cleaned) as T; } catch { return null; }
+  try {
+    const cleaned = text.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
+    return JSON.parse(cleaned) as T;
+  } catch (e) {
+    console.error('[OCR DEBUG] JSON Parse Error:', e);
+    // Attempt to fix common truncation by adding closing braces if missing
+    if (text.trim().startsWith('{') && !text.trim().endsWith('}')) {
+       try { return JSON.parse(text.trim() + '}') as T; } catch { return null; }
+    }
+    return null;
+  }
 }
 
 export default defineEventHandler(async (event) => {
@@ -55,15 +73,20 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { imageBase64, mimeType } = schema.parse(body);
 
-  // Strip a possible data URL prefix.
   const cleanBase64 = imageBase64.replace(/^data:.*?;base64,/, '');
 
   const ai = new GoogleGenerativeAI(apiKey);
 
   let extracted: ExtractedReceipt | null = null;
+  let text: string | null = null;
   try {
-    const text = await callGeminiResilient(ai, {
-      generationConfig: { responseMimeType: 'application/json', temperature: 0.1, maxOutputTokens: 1200 },
+    text = await callGeminiResilient(ai, {
+      generationConfig: { 
+        temperature: 0.1, 
+        maxOutputTokens: 4096,
+        topP: 0.8,
+        topK: 40
+      },
       contents: [
         { text: PROMPT },
         { inlineData: { data: cleanBase64, mimeType } },
@@ -74,31 +97,49 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 502, statusMessage: `OCR failed: ${err?.message || 'unknown'}` });
   }
 
-  if (!extracted) {
-    throw createError({ statusCode: 422, statusMessage: 'Could not parse receipt from image' });
+
+  if (!extracted || !extracted.isFinancial) {
+    throw createError({ 
+      statusCode: 422, 
+      statusMessage: 'عذراً، لم أجد أي بيانات مالية واضحة في هذه الصورة. يرجى التأكد من تصوير إيصال أو فاتورة.' 
+    });
   }
 
-  // Shape the response to match PreviewData so the existing preview UI can render it.
+
+
   const items = Array.isArray(extracted.items) ? extracted.items : [];
-  const previewExpenses = items.length
-    ? items.map((it) => ({
-        title: it.title || extracted!.vendor || 'صرف',
-        amount: Number(it.amount) || 0,
-        category: extracted!.category || 'متفرقات',
-      }))
-    : extracted.total
-    ? [{
-        title: extracted.vendor || 'صرف من إيصال',
-        amount: Number(extracted.total) || 0,
-        category: extracted.category || 'متفرقات',
-      }]
-    : [];
+  
+  const previewRevenues = items
+    .filter(it => it && it.type === 'revenue')
+    .map(it => ({
+      title: it.title || 'دخل من إيصال',
+      amount: Number(it.amount) || 0,
+      category: extracted!.category || 'عام',
+    }));
+
+  const previewExpenses = items
+    .filter(it => it && it.type === 'expense')
+    .map(it => ({
+      title: it.title || extracted!.vendor || 'صرف',
+      amount: Number(it.amount) || 0,
+      category: extracted!.category || 'متفرقات',
+    }));
+
+  // If no items extracted but there is a total, fallback to a single expense (most common case for receipts)
+  if (previewRevenues.length === 0 && previewExpenses.length === 0 && extracted.total) {
+    previewExpenses.push({
+      title: extracted.vendor || 'صرف من إيصال',
+      amount: Number(extracted.total) || 0,
+      category: extracted.category || 'متفرقات',
+    });
+  }
 
   return {
     extracted,
     preview: {
-      revenues: [],
+      revenues: previewRevenues,
       expenses: previewExpenses,
+      summary: extracted.summary,
     },
   };
 });

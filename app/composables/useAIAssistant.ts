@@ -402,6 +402,7 @@ export const useAIAssistant = () => {
     if (previewData.value) {
       const now = new Date();
       
+      // Save all extracted transactions
       for (const r of previewData.value.revenues) {
         await $fetch('/api/transactions', {
           method: 'POST',
@@ -416,11 +417,29 @@ export const useAIAssistant = () => {
         });
       }
 
+      // If there's an AI summary from OCR, save it as an Insight
+      if (previewData.value.summary) {
+        await $fetch('/api/insights', {
+          method: 'POST',
+          body: {
+            whatHappened: previewData.value.summary,
+            whyItMatters: 'تم استخراج هذه المعلومة آلياً من المستند المرفق.',
+            whatToDo: 'راجع هذه البيانات في سجل المعاملات للتأكد من دقتها.',
+            category: 'OCR'
+          }
+        });
+      }
+
       await refreshData();
+      const hasData = previewData.value.revenues.length > 0 || previewData.value.expenses.length > 0;
       previewData.value = null;
       robotState.value = 'saved';
 
-      sendTextMessage('I have confirmed and saved everything to the database. Now, give me a quick strategic insight based on these new records.');
+      if (hasData) {
+        sendTextMessage('I have confirmed and saved everything to the database. Now, give me a quick strategic insight based on these new records.');
+      } else {
+        sendTextMessage('I have cleared the preview.');
+      }
 
       setTimeout(() => { robotState.value = 'listening'; }, 3000);
     }

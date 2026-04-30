@@ -11,7 +11,7 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
     optimizeDeps: {
-     include: [
+      include: [
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'lucide-vue-next',
@@ -20,6 +20,7 @@ export default defineNuxtConfig({
         'clsx',
         'tailwind-merge',
         '@unovis/vue',
+        '@google/genai',
       ]
     }
   },
