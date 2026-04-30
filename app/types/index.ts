@@ -25,6 +25,7 @@ export interface PreviewData {
   revenues: { title: string; amount: number; category: string }[];
   expenses: { title: string; amount: number; category: string }[];
   summary?: string;
+  date?: string;
 }
 
 // ----- AI Co-Founder Boardroom -----

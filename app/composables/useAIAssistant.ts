@@ -401,19 +401,21 @@ export const useAIAssistant = () => {
   const handleConfirmPreview = async () => {
     if (previewData.value) {
       const now = new Date();
+      // Use the extracted date if valid, otherwise fallback to now
+      const confirmedDate = previewData.value.date || now.toISOString();
       
       // Save all extracted transactions
       for (const r of previewData.value.revenues) {
         await $fetch('/api/transactions', {
           method: 'POST',
-          body: { ...r, type: 'revenue', date: now.toISOString() }
+          body: { ...r, type: 'revenue', date: confirmedDate }
         });
       }
       
       for (const e of previewData.value.expenses) {
         await $fetch('/api/transactions', {
           method: 'POST',
-          body: { ...e, type: 'expense', date: now.toISOString() }
+          body: { ...e, type: 'expense', date: confirmedDate }
         });
       }
 
@@ -425,7 +427,8 @@ export const useAIAssistant = () => {
             whatHappened: previewData.value.summary,
             whyItMatters: 'تم استخراج هذه المعلومة آلياً من المستند المرفق.',
             whatToDo: 'راجع هذه البيانات في سجل المعاملات للتأكد من دقتها.',
-            category: 'OCR'
+            category: 'OCR',
+            timestamp: confirmedDate
           }
         });
       }

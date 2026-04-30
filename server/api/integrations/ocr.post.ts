@@ -140,6 +140,7 @@ export default defineEventHandler(async (event) => {
       revenues: previewRevenues,
       expenses: previewExpenses,
       summary: extracted.summary,
+      date: extracted.date,
     },
   };
 });
