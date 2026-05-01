@@ -2,6 +2,8 @@
 
 An AI-powered Nuxt app for managing business finances, transactions, insights, goals, and assistant-driven workflows.
 
+<img width="2818" height="1616" alt="image" src="https://github.com/user-attachments/assets/7e587cfb-65fb-4070-9ca3-0b6506486f3e" />
+
 ## What this project does
 
 - Tracks cash flow, revenue, expenses, and transactions.
@@ -114,4 +116,3 @@ These are the scripts defined in `package.json`:
 - The app is a Nuxt 4 project.
 - `postinstall` runs `nuxt prepare`, so dependency installation also prepares Nuxt types and auto-imports.
 - If you change Prisma schema or database structure, rerun the Prisma setup scripts above.
-
