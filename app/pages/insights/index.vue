@@ -8,7 +8,7 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Insights",
+  title: "الرؤى",
 });
 
 const { data: insights, refresh } = await useFetch('/api/insights');
@@ -25,8 +25,8 @@ watch(robotState, (newState) => {
 <template>
   <div>
     <AppHeader
-      title="PERFORMANCE INSIGHTS"
-      subtitle="Actionable intelligence for strategic growth."
+      title="رؤى الأداء"
+      subtitle="معلومات عملية للنمو الاستراتيجي."
     />
 
     <section class="grid gap-4">
@@ -52,17 +52,17 @@ watch(robotState, (newState) => {
             </h2>
             <div class="mt-4 grid gap-4 md:grid-cols-2">
               <div>
-                <h4 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Why it matters</h4>
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">لماذا هذا مهم</h4>
                 <p class="text-sm font-medium leading-relaxed">{{ insight.whyItMatters }}</p>
               </div>
               <div v-if="insight.whatToDo">
-                <h4 class="text-[10px] font-black uppercase tracking-widest text-primary mb-1">What to do</h4>
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-primary mb-1">ما الذي يجب فعله</h4>
                 <p class="text-sm font-medium leading-relaxed">{{ insight.whatToDo }}</p>
               </div>
             </div>
             <div class="mt-6 flex flex-wrap gap-3">
               <Button as-child class="h-10 rounded-md text-[10px] font-black uppercase tracking-wider">
-                <NuxtLink to="/chat">DISCUSS WITH CO-FOUNDER</NuxtLink>
+                <NuxtLink to="/chat">ناقش مع شريكك</NuxtLink>
               </Button>
             </div>
           </div>
@@ -70,7 +70,7 @@ watch(robotState, (newState) => {
       </article>
 
       <div v-if="!insights || insights.length === 0" class="py-20 text-center text-muted-foreground italic uppercase tracking-widest text-xs">
-        No strategic insights generated yet. Talk to your AI partner to analyze your business.
+        لم يتم توليد رؤى استراتيجية بعد. تحدّث مع شريكك الذكي لتحليل عملك.
       </div>
     </section>
 

@@ -7,15 +7,15 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Learn",
+  title: "التعلم",
 });
 </script>
 
 <template>
   <div>
     <AppHeader
-      title="LEARNING & DEVELOPMENT"
-      subtitle="Expand expertise. Drive business growth."
+      title="التعلم والتطوير"
+      subtitle="طوّر خبرتك وادفع نمو العمل."
     />
 
     <section class="rounded-md border bg-card p-6 landing-reveal" :style="{ animationDelay: '0ms' }">
@@ -23,17 +23,17 @@ useSeoMeta({
         <div class="rounded-md bg-muted p-4">
           <BookOpen class="size-5 text-primary" />
           <strong class="mt-3 block text-2xl font-black tabular-nums">24</strong>
-          <span class="text-sm font-black uppercase tracking-wider text-muted-foreground">Lessons Completed</span>
+          <span class="text-sm font-black uppercase tracking-wider text-muted-foreground">الدروس المكتملة</span>
         </div>
         <div class="rounded-md bg-muted p-4">
           <Trophy class="size-5 text-primary" />
           <strong class="mt-3 block text-2xl font-black tabular-nums">320</strong>
-          <span class="text-sm font-black uppercase tracking-wider text-muted-foreground">Points Earned</span>
+          <span class="text-sm font-black uppercase tracking-wider text-muted-foreground">النقاط المكتسبة</span>
         </div>
         <div class="rounded-md bg-muted p-4">
           <Zap class="size-5 text-primary" />
           <strong class="mt-3 block text-2xl font-black tabular-nums">12</strong>
-          <span class="text-sm font-black uppercase tracking-wider text-muted-foreground">Day Streak</span>
+          <span class="text-sm font-black uppercase tracking-wider text-muted-foreground">سلسلة الأيام</span>
         </div>
       </div>
     </section>
@@ -57,9 +57,9 @@ useSeoMeta({
         </div>
         <div class="mt-4 flex items-center justify-between gap-4">
           <span class="text-[10px] font-black uppercase tracking-wider text-muted-foreground"
-            >{{ lesson.progress }}% COMPLETE</span
+            >{{ lesson.progress }}% مكتمل</span
           >
-          <Button size="sm" class="h-8 rounded-md text-[10px] font-black uppercase tracking-wider">CONTINUE</Button>
+          <Button size="sm" class="h-8 rounded-md text-[10px] font-black uppercase tracking-wider">متابعة</Button>
         </div>
       </article>
     </section>

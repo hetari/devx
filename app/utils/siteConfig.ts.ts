@@ -1,12 +1,12 @@
 export const siteConfig = {
-  name: 'AI Co-Founder',
-  title: 'AI Co-Founder - Your AI business partner',
-  description: 'A Nuxt 4 business dashboard for tracking cash flow, transactions, insights, and AI guidance.',
-  url: 'https://ai-cofounder.local',
+  name: 'شريكك',
+  title: 'شريكك - مساعدك التجاري الذكي',
+  description: 'لوحة أعمال مبنية بـ Nuxt 4 لتتبع التدفق النقدي والمعاملات والرؤى والإرشاد الذكي.',
+  url: 'https://sharikak.local',
   ogImage: '/og-image.png',
   author: {
-    name: 'AI Co-Founder Team',
-    url: 'https://ai-cofounder.local',
+    name: 'فريق شريكك',
+    url: 'https://sharikak.local',
   },
   links: {
     home: '/',
@@ -17,23 +17,23 @@ export const siteConfig = {
   },
   nav: [
     {
-      label: 'Home',
+      label: 'الرئيسية',
       to: '/',
     },
     {
-      label: 'Dashboard',
+      label: 'لوحة التحكم',
       to: '/dashboard',
     },
     {
-      label: 'Transactions',
+      label: 'المعاملات',
       to: '/transactions',
     },
     {
-      label: 'Insights',
+      label: 'الرؤى',
       to: '/insights',
     },
     {
-      label: 'AI Chat',
+      label: 'دردشة الذكاء',
       to: '/chat',
     },
   ],

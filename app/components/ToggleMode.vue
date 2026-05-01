@@ -12,7 +12,7 @@ const toggleDark = () => {
     variant="outline"
     size="icon"
     class="size-9 bg-background"
-    aria-label="Toggle dark mode"
+    aria-label="تبديل الوضع الداكن"
     @click="toggleDark()"
   >
     <Moon v-if="!isDark" class="size-4" />

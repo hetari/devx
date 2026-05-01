@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { Loader2, X, Gavel, MessageSquareQuote, RotateCcw } from 'lucide-vue-next';
-import { useBoardroom } from '~/composables/useBoardroom';
-import AgentDebateCard from './AgentDebateCard.vue';
+import { ref, computed } from "vue";
+import {
+  Loader2,
+  X,
+  Gavel,
+  MessageSquareQuote,
+  RotateCcw,
+} from "lucide-vue-next";
+import { useBoardroom } from "~/composables/useBoardroom";
+import AgentDebateCard from "./AgentDebateCard.vue";
 
 const {
   phase,
@@ -17,35 +23,43 @@ const {
 } = useBoardroom();
 
 const overrideOpen = ref(false);
-const overrideText = ref('');
+const overrideText = ref("");
 
 const phaseLabel = computed(() => {
   switch (phase.value) {
-    case 'convening': return 'يجمع المجلس آراءه...';
-    case 'debating':  return 'الأعضاء يستعدون';
-    case 'speaking':  return 'الأعضاء يتحدثون';
-    case 'deciding':  return 'القرار بيدك';
-    case 'closing':   return 'تم الحفظ';
-    default:          return '';
+    case "convening":
+      return "يجمع المجلس آراءه...";
+    case "debating":
+      return "الأعضاء يستعدون";
+    case "speaking":
+      return "الأعضاء يتحدثون";
+    case "deciding":
+      return "القرار بيدك";
+    case "closing":
+      return "تم الحفظ";
+    default:
+      return "";
   }
 });
 
-const showActions = computed(() => phase.value === 'deciding');
-const isLoading = computed(() => phase.value === 'convening' || phase.value === 'closing');
+const showActions = computed(() => phase.value === "deciding");
+const isLoading = computed(
+  () => phase.value === "convening" || phase.value === "closing",
+);
 
 const handleApprove = (agentId: any) => {
-  submitDecision('approved', { approvedAgent: agentId });
+  submitDecision("approved", { approvedAgent: agentId });
 };
 
 const submitOverride = () => {
   if (!overrideText.value.trim()) return;
-  submitDecision('override', { overrideText: overrideText.value.trim() });
-  overrideText.value = '';
+  submitDecision("override", { overrideText: overrideText.value.trim() });
+  overrideText.value = "";
   overrideOpen.value = false;
 };
 
 const handleDismiss = () => {
-  submitDecision('dismissed');
+  submitDecision("dismissed");
 };
 </script>
 
@@ -59,12 +73,18 @@ const handleDismiss = () => {
       class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/85 backdrop-blur-2xl p-4 md:p-8"
     >
       <!-- Top bar -->
-      <div class="absolute top-4 left-4 right-4 flex items-center justify-between text-xs uppercase tracking-wider opacity-80">
+      <div
+        class="absolute top-4 start-4 end-4 flex items-center justify-between text-xs uppercase tracking-wider opacity-80"
+      >
         <div class="flex items-center gap-2">
           <Gavel class="size-4" />
           <span>اجتماع المجلس</span>
         </div>
-        <button class="rounded-full p-2 hover:bg-white/10" aria-label="إغلاق" @click="reset">
+        <button
+          class="rounded-full p-2 hover:bg-white/10"
+          aria-label="إغلاق"
+          @click="reset"
+        >
           <X class="size-5" />
         </button>
       </div>
@@ -76,15 +96,16 @@ const handleDismiss = () => {
       </div>
 
       <!-- Topic -->
-      <h2 class="mb-8 max-w-3xl text-center text-2xl md:text-3xl font-bold leading-snug" dir="rtl">
-        {{ topic || '...' }}
+      <h2
+        class="mb-8 max-w-3xl text-center text-2xl md:text-3xl font-bold leading-snug"
+      >
+        {{ topic || "..." }}
       </h2>
 
       <!-- Error -->
       <div
         v-if="error"
         class="mb-4 rounded-xl border border-destructive/40 bg-destructive/20 px-4 py-2 text-sm"
-        dir="rtl"
       >
         {{ error }}
       </div>
@@ -105,14 +126,21 @@ const handleDismiss = () => {
       </div>
 
       <!-- Bottom actions -->
-      <div v-if="showActions" class="mt-10 flex w-full max-w-3xl flex-col gap-3 md:flex-row md:items-center md:justify-center">
-        <Button variant="outline" class="gap-2" @click="overrideOpen = !overrideOpen">
+      <div
+        v-if="showActions"
+        class="mt-10 flex w-full max-w-3xl flex-col gap-3 md:flex-row md:items-center md:justify-center"
+      >
+        <Button
+          variant="outline"
+          class="gap-2"
+          @click="overrideOpen = !overrideOpen"
+        >
           <MessageSquareQuote class="size-4" />
-          <span dir="rtl">قراري الخاص</span>
+          <span>قراري الخاص</span>
         </Button>
         <Button variant="ghost" class="gap-2" @click="handleDismiss">
           <RotateCcw class="size-4" />
-          <span dir="rtl">أجل القرار</span>
+          <span>أجل القرار</span>
         </Button>
       </div>
 
@@ -124,7 +152,6 @@ const handleDismiss = () => {
         <div
           v-if="overrideOpen && showActions"
           class="mt-6 w-full max-w-2xl rounded-2xl border border-white/15 bg-background/80 p-4 shadow-2xl backdrop-blur-xl"
-          dir="rtl"
         >
           <label class="mb-2 block text-sm font-bold">قرارك بنفسك:</label>
           <textarea
@@ -135,7 +162,9 @@ const handleDismiss = () => {
           />
           <div class="mt-3 flex justify-end gap-2">
             <Button variant="ghost" @click="overrideOpen = false">إلغاء</Button>
-            <Button :disabled="!overrideText.trim()" @click="submitOverride">حفظ القرار</Button>
+            <Button :disabled="!overrideText.trim()" @click="submitOverride"
+              >حفظ القرار</Button
+            >
           </div>
         </div>
       </Transition>
@@ -148,7 +177,6 @@ const handleDismiss = () => {
         <div
           v-if="outcome"
           class="mt-8 max-w-2xl rounded-2xl border border-white/20 bg-primary/15 px-6 py-4 text-center text-base font-medium backdrop-blur-md"
-          dir="rtl"
         >
           {{ outcome }}
         </div>

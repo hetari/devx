@@ -20,9 +20,7 @@ defineProps<{
       </span>
       <span>
         <span class="block text-base font-semibold">{{ siteConfig.name }}</span>
-        <span class="block text-xs text-sidebar-foreground/70"
-          >AI Business Partner</span
-        >
+        <span class="block text-xs text-sidebar-foreground/70">مساعدك التجاري الذكي</span>
       </span>
     </NuxtLink>
 
@@ -53,13 +51,13 @@ defineProps<{
         class="flex items-center gap-2 font-semibold text-sidebar-accent-foreground"
       >
         <Crown class="size-5 text-primary" />
-        Upgrade to Pro
+        الترقية إلى برو
       </div>
       <p class="mt-2 text-sm leading-6 text-sidebar-foreground/70">
-        Unlock advanced insights, custom reports, and weekly AI strategy briefs.
+        افتح الرؤى المتقدمة والتقارير المخصصة والموجزات الاستراتيجية الأسبوعية.
       </p>
       <Button class="mt-4 w-full" size="sm">
-        Upgrade
+        ترقية
         <ArrowRight class="size-4" />
       </Button>
       </CardContent>
@@ -72,9 +70,9 @@ defineProps<{
         <AvatarFallback>T</AvatarFallback>
       </Avatar>
       <div class="min-w-0">
-        <p class="truncate text-sm font-medium">Tariq Khan</p>
+        <p class="truncate text-sm font-medium">طارق خان</p>
         <p class="truncate text-xs text-sidebar-foreground/70">
-          Business Owner
+          مالك النشاط
         </p>
       </div>
     </div>

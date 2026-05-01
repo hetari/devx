@@ -8,8 +8,8 @@ withDefaults(
     subtitle?: string;
   }>(),
   {
-    title: "Good evening, Tariq",
-    subtitle: "Let's grow your business together",
+    title: "مساء الخير يا طارق",
+    subtitle: "لننمِّ عملك معاً",
   },
 );
 </script>
@@ -24,7 +24,7 @@ withDefaults(
       <div class="flex min-w-0 items-center gap-3">
         <SidebarTrigger
           class="mt-1 size-9 shrink-0 border bg-background shadow-xs"
-          aria-label="Toggle sidebar"
+          aria-label="تبديل الشريط الجانبي"
         />
         <Separator
           orientation="vertical"
@@ -53,11 +53,11 @@ withDefaults(
           variant="outline"
           size="icon"
           class="relative size-9 rounded-md bg-background"
-          aria-label="Notifications"
+        aria-label="الإشعارات"
         >
           <Bell class="size-4" />
           <span
-            class="absolute right-2 top-2 size-2 rounded-full bg-primary ring-2 ring-background"
+            class="absolute end-2 top-2 size-2 rounded-full bg-primary ring-2 ring-background"
           />
         </Button>
         <Avatar class="size-9 rounded-md border">
@@ -73,7 +73,7 @@ withDefaults(
     <div class="grid gap-2 sm:grid-cols-3">
       <Card class="min-h-12 border-primary/20 rounded-md py-0 shadow-none">
         <CardContent class="flex h-full items-center justify-between px-3 py-2">
-        <span class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Monthly Profit</span>
+        <span class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">الربح الشهري</span>
         <span
           class="text-sm font-black text-chart-4"
         >
@@ -83,8 +83,8 @@ withDefaults(
       </Card>
       <Card class="min-h-12 border-primary/20 rounded-md py-0 shadow-none">
         <CardContent class="flex h-full items-center justify-between px-3 py-2">
-        <span class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Cash Runway</span>
-        <span class="text-sm font-black text-foreground">8.5 MONTHS</span>
+        <span class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">المدة النقدية</span>
+        <span class="text-sm font-black text-foreground">8.5 شهر</span>
         </CardContent>
       </Card>
       <Card class="min-h-12 bg-primary text-primary-foreground rounded-md py-0 shadow-none">
@@ -93,9 +93,9 @@ withDefaults(
           class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-primary-foreground/80"
         >
           <Sparkles class="size-3 text-primary-foreground" />
-          AI Brief
+          موجز الذكاء
         </span>
-        <span class="text-sm font-black uppercase">Ready</span>
+        <span class="text-sm font-black uppercase">جاهز</span>
         </CardContent>
       </Card>
     </div>

@@ -6,17 +6,17 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Goals",
+  title: "الأهداف",
 });
 </script>
 
 <template>
   <div>
     <AppHeader
-      title="STRATEGIC GOALS"
-      subtitle="Operational targets and growth benchmarks."
+      title="الأهداف الاستراتيجية"
+      subtitle="أهداف تشغيلية ومقاييس نمو."
     >
-      <Button class="h-9 rounded-md text-[10px] font-black uppercase tracking-wider">NEW OBJECTIVE</Button>
+      <Button class="h-9 rounded-md text-[10px] font-black uppercase tracking-wider">هدف جديد</Button>
     </AppHeader>
 
     <section class="grid gap-4 xl:grid-cols-2">

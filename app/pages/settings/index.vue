@@ -8,31 +8,31 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Settings",
+  title: "الإعدادات",
 });
 
-const businessName = shallowRef("Tariq Trading");
+const businessName = shallowRef("تجارة شريكك");
 const currency = shallowRef("USD");
 </script>
 
 <template>
   <div>
     <AppHeader
-      title="SYSTEM SETTINGS"
-      subtitle="Configure business profile and operational parameters."
+      title="إعدادات النظام"
+      subtitle="اضبط ملف العمل والمعايير التشغيلية."
     />
 
     <section class="max-w-2xl rounded-md border bg-card p-6 landing-reveal">
       <div class="grid gap-6">
         <label class="grid gap-2">
-          <Label class="text-[10px] font-black uppercase tracking-wider">Business Name</Label>
+          <Label class="text-[10px] font-black uppercase tracking-wider">اسم النشاط</Label>
           <Input v-model="businessName" class="rounded-md h-9 text-sm font-medium focus-visible:ring-primary"/>
         </label>
         <label class="grid gap-2">
-          <Label class="text-[10px] font-black uppercase tracking-wider">Currency</Label>
+          <Label class="text-[10px] font-black uppercase tracking-wider">العملة</Label>
           <Input v-model="currency" class="rounded-md h-9 text-sm font-medium focus-visible:ring-primary"/>
         </label>
-        <Button class="w-fit h-9 rounded-md text-[10px] font-black uppercase tracking-wider">SAVE CONFIGURATION</Button>
+        <Button class="w-fit h-9 rounded-md text-[10px] font-black uppercase tracking-wider">حفظ الإعدادات</Button>
       </div>
     </section>
 

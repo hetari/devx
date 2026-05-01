@@ -36,19 +36,19 @@ const percentFormatter = new Intl.NumberFormat("en-US", {
 
 const heroStats = [
   {
-    label: "Tracked Revenue",
+    label: "الإيرادات المتتبعة",
     value: currencyFormatter.format(2450),
     detail: "+18.2%",
     tone: "text-chart-4",
   },
   {
-    label: "Profit Margin",
+    label: "هامش الربح",
     value: `${percentFormatter.format(36.3)}%`,
     detail: "+6.3%",
     tone: "text-primary",
   },
   {
-    label: "Expenses Found",
+    label: "المصروفات المكتشفة",
     value: currencyFormatter.format(1560),
     detail: "3 fixes",
     tone: "text-destructive",
@@ -56,95 +56,95 @@ const heroStats = [
 ] as const;
 
 const navLinks = [
-  { label: "Product", to: "#product" },
-  { label: "Workflows", to: "#workflows" },
-  { label: "Insights", to: "#insights" },
-  { label: "Pricing", to: "#pricing" },
-  { label: "FAQ", to: "#faq" },
+  { label: "المنتج", to: "#product" },
+  { label: "العمليات", to: "#workflows" },
+  { label: "الرؤى", to: "#insights" },
+  { label: "التسعير", to: "#pricing" },
+  { label: "الأسئلة الشائعة", to: "#faq" },
 ] as const;
 
 const operatingLoop = [
   {
-    title: "Capture Every Sale",
-    copy: "Log revenue, expenses, delivery fees, and supplies before they blur together.",
+    title: "التقط كل عملية بيع",
+    copy: "سجّل الإيرادات والمصروفات ورسوم التوصيل والمستلزمات قبل أن تختلط.",
     icon: ReceiptText,
   },
   {
-    title: "Read The Business",
-    copy: "Atule turns transactions into cash flow, profit margin, and category pressure.",
+    title: "اقرأ العمل",
+    copy: "شريكك يحول المعاملات إلى تدفق نقدي وهامش ربح وضغط على الفئات.",
     icon: BarChart3,
   },
   {
-    title: "Ask For The Next Move",
-    copy: "The AI partner explains what changed and which action should happen today.",
+    title: "اسأل عن الخطوة التالية",
+    copy: "يشرح الشريك الذكي ما الذي تغيّر وأي إجراء يجب أن يحدث اليوم.",
     icon: Bot,
   },
 ] as const;
 
 const featureGrid = [
   {
-    title: "Cash Flow That Speaks Plainly",
-    copy: "Revenue, expenses, and profit stay in one operating view, with no finance jargon required.",
+    title: "تدفق نقدي واضح",
+    copy: "تبقى الإيرادات والمصروفات والربح في عرض تشغيلي واحد من دون مصطلحات مالية معقدة.",
     icon: Wallet,
   },
   {
-    title: "Expense Pressure Radar",
-    copy: "Spot materials, delivery, marketing, and utility costs before they drain the month.",
+    title: "رادار ضغط المصروفات",
+    copy: "اكتشف تكاليف المواد والتوصيل والتسويق والمرافق قبل أن تستنزف الشهر.",
     icon: TrendingDown,
   },
   {
-    title: "AI Strategy Briefs",
-    copy: "Get practical recommendations based on the numbers already inside your workspace.",
+    title: "موجزات استراتيجية بالذكاء",
+    copy: "احصل على توصيات عملية مبنية على الأرقام الموجودة داخل مساحة عملك.",
     icon: Lightbulb,
   },
   {
-    title: "Export-Ready Reports",
-    copy: "Turn messy activity into clean summaries for lenders, partners, and your own review.",
+    title: "تقارير جاهزة للتصدير",
+    copy: "حوّل النشاط المبعثر إلى ملخصات نظيفة للممولين والشركاء ومراجعتك الخاصة.",
     icon: FileText,
   },
 ] as const;
 
 const trustItems = [
-  "Built for owner-led businesses",
-  "Private workspace by default",
-  "No spreadsheet cleanup ritual",
+  "مبني للأعمال التي يديرها أصحابها",
+  "مساحة عمل خاصة افتراضياً",
+  "من دون طقوس تنظيف جداول البيانات",
 ] as const;
 
 const faqItems = [
   {
-    question: "What is Atule?",
+    question: "ما هو شريكك؟",
     answer:
-      "Atule is an AI business partner that brings your sales, expenses, cash flow, and goals into one calm cockpit—then helps you decide the next step.",
+      "شريكك هو مساعد تجاري ذكي يجمع المبيعات والمصروفات والتدفق النقدي والأهداف في لوحة واحدة هادئة، ثم يساعدك على تحديد الخطوة التالية.",
   },
   {
-    question: "How does the AI partner work?",
+    question: "كيف يعمل الشريك الذكي؟",
     answer:
-      "It reads your transaction history, detects patterns, and provides short, actionable briefs you can act on immediately.",
+      "يقرأ سجل المعاملات، ويكتشف الأنماط، ويقدم موجزات قصيرة قابلة للتنفيذ فوراً.",
   },
   {
-    question: "Is my data private?",
+    question: "هل بياناتي خاصة؟",
     answer:
-      "Absolutely. Your workspace is private by default. No sharing, no public dashboards, and you control exactly what data is stored.",
+      "نعم. مساحة عملك خاصة افتراضياً. لا مشاركة ولا لوحات عامة، وأنت تتحكم بدقة في البيانات المخزنة.",
   },
   {
-    question: "Can I start for free?",
+    question: "هل أستطيع البدء مجاناً؟",
     answer:
-      "You can explore the live dashboard and learning content right now. When you’re ready, bring in your real numbers—no rushed upgrade required.",
+      "يمكنك استكشاف اللوحة الحية ومحتوى التعلم الآن. وعندما تكون جاهزاً، أدخل أرقامك الحقيقية من دون ترقية مستعجلة.",
   },
 ];
 
 useSeoMeta({
-  title: "Atule - AI Business Partner",
+  title: "شريكك - مساعدك التجاري الذكي",
   description:
-    "Atule is an AI business partner for owner-led shops that turns cash flow, expenses, transactions, and goals into clear next actions.",
-  ogTitle: "Atule - AI Business Partner",
+    "شريكك مساعد تجاري ذكي للأعمال التي يديرها أصحابها، يحول التدفق النقدي والمصروفات والمعاملات والأهداف إلى خطوات واضحة.",
+  ogTitle: "شريكك - مساعدك التجاري الذكي",
   ogDescription:
-    "Run your sales, expenses, insights, and AI guidance from one calm business cockpit.",
+    "أدر المبيعات والمصروفات والرؤى والإرشاد الذكي من لوحة أعمال واحدة هادئة.",
   twitterCard: "summary_large_image",
 });
 
 useHead({
-  htmlAttrs: { lang: "en" },
+  htmlAttrs: { lang: "ar" },
 });
 </script>
 
@@ -155,9 +155,9 @@ useHead({
     <!-- Skip link -->
     <a
       href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground focus-visible:ring-2 focus-visible:ring-ring"
+      class="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground focus-visible:ring-2 focus-visible:ring-ring"
     >
-      Skip To Main Content
+      الانتقال إلى المحتوى الرئيسي
     </a>
 
     <!-- Header -->
@@ -166,7 +166,7 @@ useHead({
     >
       <nav
         class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
-        aria-label="Primary navigation"
+        aria-label="التنقل الرئيسي"
       >
         <!-- Logo -->
         <NuxtLink
@@ -181,12 +181,12 @@ useHead({
           </span>
           <span class="min-w-0">
             <span class="block truncate text-sm font-black uppercase">
-              Atule
+              شريكك
             </span>
             <span
               class="block truncate text-xs font-medium text-muted-foreground"
             >
-              AI Business Partner
+              مساعدك التجاري الذكي
             </span>
           </span>
         </NuxtLink>
@@ -210,13 +210,13 @@ useHead({
             <SheetTrigger as-child>
               <Button variant="ghost" size="icon" class="md:hidden">
                 <Menu class="size-5" />
-                <span class="sr-only">Open menu</span>
+                <span class="sr-only">فتح القائمة</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" class="w-72">
               <SheetHeader>
-                <SheetTitle>Atule</SheetTitle>
-                <SheetDescription>AI Business Partner</SheetDescription>
+                <SheetTitle>شريكك</SheetTitle>
+                <SheetDescription>مساعدك التجاري الذكي</SheetDescription>
               </SheetHeader>
               <nav class="mt-6 flex flex-col gap-1">
                 <NuxtLink
@@ -235,11 +235,11 @@ useHead({
           <ToggleMode />
 
           <Button as-child variant="ghost" class="hidden h-9 md:inline-flex">
-            <NuxtLink to="/chat">Ask AI</NuxtLink>
+            <NuxtLink to="/chat">اسأل الذكاء</NuxtLink>
           </Button>
           <Button as-child class="h-9">
             <NuxtLink to="/dashboard">
-              Open Dashboard
+              افتح لوحة التحكم
               <ArrowRight class="size-4" aria-hidden="true" />
             </NuxtLink>
           </Button>
@@ -262,25 +262,25 @@ useHead({
             variant="outline"
           >
             <ShieldCheck class="size-3" aria-hidden="true" />
-            Owner-Led Finance Without The Fog
+            تمويل يديره المالك من دون ضبابية
           </Badge>
 
           <h1
             class="mt-6 max-w-4xl text-balance text-5xl font-black leading-[.92] tracking-normal text-foreground sm:text-6xl lg:text-7xl"
           >
-            Atule turns daily business chaos into your next best move.
+            يحول شريكك فوضى العمل اليومية إلى أفضل خطوة تالية.
           </h1>
           <p
             class="mt-6 max-w-2xl text-pretty text-lg leading-8 text-muted-foreground sm:text-xl"
           >
-            A calm AI business partner for small teams that need sales,
-            expenses, cash flow, learning, goals, and advice in one place.
+            مساعد تجاري ذكي هادئ للفرق الصغيرة التي تحتاج المبيعات
+            والمصروفات والتدفق النقدي والتعلم والأهداف والنصيحة في مكان واحد.
           </p>
 
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button as-child size="lg" class="h-12 px-5">
               <NuxtLink to="/dashboard">
-                See The Live Dashboard
+                شاهد اللوحة الحية
                 <ArrowRight class="size-4" aria-hidden="true" />
               </NuxtLink>
             </Button>
@@ -292,7 +292,7 @@ useHead({
             >
               <NuxtLink to="/learn">
                 <Play class="size-4" aria-hidden="true" />
-                Explore Learning
+                استكشف التعلم
               </NuxtLink>
             </Button>
           </div>
@@ -319,7 +319,7 @@ useHead({
           id="product"
           class="landing-reveal relative min-h-[560px] overflow-hidden rounded-md border bg-primary p-3 shadow-2xl shadow-primary/20"
           role="img"
-          aria-label="Atule dashboard showing revenue, profit margin, cash flow, goals, and AI advice."
+          aria-label="لوحة شريكك تعرض الإيرادات وهامش الربح والتدفق النقدي والأهداف ونصائح الذكاء."
         >
           <div
             class="grid h-full min-h-[536px] gap-3 rounded-sm bg-background p-3 lg:grid-cols-[1.15fr_.85fr]"
@@ -333,10 +333,10 @@ useHead({
                     <p
                       class="text-xs font-bold uppercase text-muted-foreground"
                     >
-                      Today’s Cash Signal
+                      إشارة النقد اليوم
                     </p>
                     <p class="mt-1 truncate text-3xl font-black">
-                      {{ currencyFormatter.format(890) }} Profit
+                      {{ currencyFormatter.format(890) }} ربح
                     </p>
                   </div>
                   <span
@@ -381,17 +381,17 @@ useHead({
               >
                 <div class="flex items-center gap-2">
                   <Bot class="size-5" aria-hidden="true" />
-                  <p class="text-sm font-black">AI Brief Ready</p>
+                  <p class="text-sm font-black">موجز الذكاء جاهز</p>
                 </div>
                 <p class="mt-4 text-pretty text-2xl font-black leading-tight">
-                  Expenses are 63% of revenue. Group deliveries and renegotiate
-                  materials first.
+                  المصروفات تشكل 63% من الإيرادات. اجمع عمليات التوصيل وأعد
+                  التفاوض على المواد أولاً.
                 </p>
                 <NuxtLink
                   to="/chat"
                   class="mt-5 inline-flex items-center gap-2 rounded-md bg-primary-foreground px-3 py-2 text-sm font-bold text-primary transition-colors duration-200 hover:bg-primary-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  Ask Follow-Up
+                  اسأل متابعة
                   <ArrowRight class="size-4" aria-hidden="true" />
                 </NuxtLink>
               </div>
@@ -400,17 +400,17 @@ useHead({
                 class="rounded-md border bg-card p-4 text-card-foreground shadow-sm"
               >
                 <div class="flex items-center justify-between gap-3">
-                  <p class="text-sm font-black">Goal Progress</p>
+                  <p class="text-sm font-black">تقدم الهدف</p>
                   <span
                     class="rounded-md bg-muted px-2 py-1 text-xs font-black text-muted-foreground"
                   >
-                    Active
+                    نشط
                   </span>
                 </div>
                 <div class="mt-5 space-y-4">
                   <div>
                     <div class="flex justify-between gap-3 text-sm">
-                      <span class="font-semibold">Monthly Profit</span>
+                      <span class="font-semibold">الربح الشهري</span>
                       <span class="font-bold">45%</span>
                     </div>
                     <Progress
@@ -420,7 +420,7 @@ useHead({
                   </div>
                   <div>
                     <div class="flex justify-between gap-3 text-sm">
-                      <span class="font-semibold">Expense Control</span>
+                      <span class="font-semibold">التحكم بالمصروفات</span>
                       <span class="font-bold">30%</span>
                     </div>
                     <Progress
@@ -434,18 +434,18 @@ useHead({
               <div
                 class="rounded-md border bg-card p-4 text-card-foreground shadow-sm"
               >
-                <p class="text-sm font-black">Next Transactions</p>
+                <p class="text-sm font-black">المعاملات التالية</p>
                 <div class="mt-4 grid gap-3 text-sm">
                   <div class="flex items-center justify-between gap-4">
-                    <span class="min-w-0 truncate">Sold 10 items</span>
+                    <span class="min-w-0 truncate">بيع 10 قطع</span>
                     <span class="font-black text-chart-4">+$100</span>
                   </div>
                   <div class="flex items-center justify-between gap-4">
-                    <span class="min-w-0 truncate">Bought materials</span>
+                    <span class="min-w-0 truncate">شراء مواد</span>
                     <span class="font-black text-destructive">-$60</span>
                   </div>
                   <div class="flex items-center justify-between gap-4">
-                    <span class="min-w-0 truncate">Delivery fee</span>
+                    <span class="min-w-0 truncate">رسوم التوصيل</span>
                     <span class="font-black text-destructive">-$10</span>
                   </div>
                 </div>
@@ -456,26 +456,26 @@ useHead({
       </section>
 
       <!-- Stats banner -->
-      <section class="border-y bg-card" aria-label="Product outcomes">
+      <section class="border-y bg-card" aria-label="نتائج المنتج">
         <div
           class="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:grid-cols-3 sm:px-6 lg:px-8"
         >
           <div class="min-w-0">
             <p class="text-4xl font-black tabular-nums">3</p>
             <p class="mt-1 text-sm font-semibold text-muted-foreground">
-              Workflows unified: tracking, insight, action.
+              توحيد العمليات: تتبع، رؤية، إجراء.
             </p>
           </div>
           <div class="min-w-0">
             <p class="text-4xl font-black tabular-nums">24</p>
             <p class="mt-1 text-sm font-semibold text-muted-foreground">
-              Transactions become a readable business story.
+              تتحول المعاملات إلى قصة أعمال مقروءة.
             </p>
           </div>
           <div class="min-w-0">
             <p class="text-4xl font-black tabular-nums">1</p>
             <p class="mt-1 text-sm font-semibold text-muted-foreground">
-              AI partner focused on the next useful decision.
+              شريك ذكي يركز على القرار المفيد التالي.
             </p>
           </div>
         </div>
@@ -491,12 +491,12 @@ useHead({
             variant="outline"
             class="border-border bg-card text-card-foreground"
           >
-            Operating Loop
+            حلقة التشغيل
           </Badge>
           <h2
             class="mt-4 text-balance text-4xl font-black leading-tight sm:text-5xl"
           >
-            The daily rhythm that keeps a small business honest.
+            الإيقاع اليومي الذي يحافظ على شفافية العمل الصغير.
           </h2>
         </div>
 
@@ -516,7 +516,7 @@ useHead({
               <CardDescription
                 class="mt-4 text-sm font-black uppercase text-muted-foreground"
               >
-                Step {{ index + 1 }}
+                الخطوة {{ index + 1 }}
               </CardDescription>
               <CardTitle class="text-2xl font-black">{{
                 step.title
@@ -541,25 +541,25 @@ useHead({
               variant="outline"
               class="border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground"
             >
-              Insight Engine
+              محرك الرؤى
             </Badge>
             <h2
               class="mt-4 text-balance text-4xl font-black leading-tight sm:text-5xl"
             >
-              It does more than show numbers. It explains what to do next.
+              لا يكتفي بإظهار الأرقام. بل يشرح ما الذي يجب فعله بعد ذلك.
             </h2>
             <p
               class="mt-5 text-pretty text-lg leading-8 text-primary-foreground/75"
             >
-              Atule combines your transaction history, category pressure, goals,
-              and learning path into short, usable business guidance.
+              يجمع شريكك سجل معاملاتك وضغط الفئات والأهداف ومسار التعلم في
+              إرشاد تجاري قصير وقابل للاستخدام.
             </p>
             <Button
               as-child
               class="mt-8 bg-primary-foreground text-primary hover:bg-primary-foreground/90"
             >
               <NuxtLink to="/insights">
-                View Insights
+                عرض الرؤى
                 <ArrowRight class="size-4" aria-hidden="true" />
               </NuxtLink>
             </Button>
@@ -601,17 +601,16 @@ useHead({
             variant="outline"
             class="border-border bg-card text-card-foreground"
           >
-            Built To Start Now
+            مبني ليبدأ الآن
           </Badge>
           <h2
             class="mt-4 text-balance text-4xl font-black leading-tight sm:text-5xl"
           >
-            A business cockpit without enterprise ceremony.
+            لوحة أعمال من دون طقوس المؤسسات.
           </h2>
           <p class="mt-5 text-pretty text-lg leading-8 text-muted-foreground">
-            Use the dashboard today, bring in real transactions when you are
-            ready, and keep every recommendation tied to observable business
-            behavior.
+            استخدم اللوحة اليوم، وأدخل المعاملات الحقيقية عندما تكون
+            جاهزاً، واجعل كل توصية مرتبطة بسلوك عمل يمكن ملاحظته.
           </p>
         </div>
 
@@ -622,24 +621,24 @@ useHead({
                 class="size-7 text-chart-4"
                 aria-hidden="true"
               />
-              <CardTitle class="text-2xl font-black">For Owners</CardTitle>
+              <CardTitle class="text-2xl font-black">للأصحاب</CardTitle>
             </CardHeader>
             <CardContent>
               <p class="leading-7 text-muted-foreground">
-                Check the pulse of the business before opening the shop, placing
-                supplier orders, or spending on promotion.
+                افحص نبض العمل قبل فتح المتجر أو طلبات الموردين أو الإنفاق على
+                الترويج.
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
               <LockKeyhole class="size-7 text-destructive" aria-hidden="true" />
-              <CardTitle class="text-2xl font-black">For Trust</CardTitle>
+              <CardTitle class="text-2xl font-black">للاطمئنان</CardTitle>
             </CardHeader>
             <CardContent>
               <p class="leading-7 text-muted-foreground">
-                Keep decisions grounded in clean records, readable reports, and
-                clear account context.
+                اجعل القرارات مستندة إلى سجلات نظيفة وتقارير واضحة وسياق
+                حسابات مفهومة.
               </p>
             </CardContent>
           </Card>
@@ -652,12 +651,12 @@ useHead({
           variant="outline"
           class="border-border bg-card text-card-foreground"
         >
-          FAQ
+          الأسئلة الشائعة
         </Badge>
         <h2
           class="mt-4 text-balance text-4xl font-black leading-tight sm:text-5xl"
         >
-          Questions you might have before trusting the numbers.
+          أسئلة قد تطرحها قبل أن تثق بالأرقام.
         </h2>
         <Accordion type="single" collapsible class="mt-10 w-full">
           <AccordionItem
@@ -665,7 +664,7 @@ useHead({
             :key="index"
             :value="`item-${index}`"
           >
-            <AccordionTrigger class="text-left font-semibold">{{
+            <AccordionTrigger class="text-start font-semibold">{{
               item.question
             }}</AccordionTrigger>
             <AccordionContent class="text-muted-foreground">{{
@@ -681,12 +680,11 @@ useHead({
           class="mx-auto flex max-w-7xl flex-col gap-6 rounded-md bg-primary p-6 text-primary-foreground sm:p-8 lg:flex-row lg:items-center lg:justify-between"
         >
           <div class="max-w-3xl">
-            <p class="text-sm font-black uppercase">Ready When You Are</p>
+            <p class="text-sm font-black uppercase">جاهز عندما تكون أنت جاهزاً</p>
             <h2
               class="mt-3 text-balance text-3xl font-black leading-tight sm:text-5xl"
             >
-              Stop guessing where the money went. Start deciding what happens
-              next.
+              توقف عن التخمين أين ذهب المال. وابدأ في تحديد ما يحدث بعد ذلك.
             </h2>
           </div>
           <Button
@@ -695,7 +693,7 @@ useHead({
             class="h-12 shrink-0 bg-primary-foreground px-5 text-primary hover:bg-primary-foreground/90"
           >
             <NuxtLink to="/dashboard">
-              Launch Atule
+              تشغيل شريكك
               <Zap class="size-4" aria-hidden="true" />
             </NuxtLink>
           </Button>

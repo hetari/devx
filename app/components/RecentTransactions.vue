@@ -16,7 +16,7 @@ const props = withDefaults(
     limit?: number;
   }>(),
   {
-    title: "Recent Activity",
+    title: "النشاط الأخير",
     limit: 10,
   },
 );
@@ -37,7 +37,7 @@ watch(robotState, (newState) => {
 const mappedTransactions = computed(() => {
   if (!dbTransactions.value) return [];
   
-  return dbTransactions.value.map((t: any) => {
+    return dbTransactions.value.map((t: any) => {
     let icon = ReceiptText;
     const cat = t.category.toLowerCase();
     if (cat.includes('material')) icon = Package;
@@ -47,7 +47,7 @@ const mappedTransactions = computed(() => {
 
     return {
       ...t,
-      title: t.title || (t.type === 'revenue' ? 'Sales Revenue' : 'Business Expense'),
+      title: t.title || (t.type === 'revenue' ? 'إيراد مبيعات' : 'مصروف تجاري'),
       time: t.time || new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       doc: t.doc || `TX-${t.id.substring(0,4).toUpperCase()}`,
       type: t.type.charAt(0).toUpperCase() + t.type.slice(1),
@@ -67,7 +67,7 @@ const mappedTransactions = computed(() => {
       </CardTitle>
       <CardAction>
       <Button as-child variant="ghost" size="sm" class="h-8 rounded-md text-[10px] font-black uppercase tracking-wider">
-        <NuxtLink to="/transactions"> View all </NuxtLink>
+        <NuxtLink to="/transactions"> عرض الكل </NuxtLink>
       </Button>
       </CardAction>
     </CardHeader>
@@ -78,7 +78,7 @@ const mappedTransactions = computed(() => {
         v-bind="transaction"
       />
       <div v-if="mappedTransactions.length === 0" class="py-10 text-center text-muted-foreground text-xs italic">
-        No recent activity found.
+        لا يوجد نشاط حديث.
       </div>
     </CardContent>
   </Card>

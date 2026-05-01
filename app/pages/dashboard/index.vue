@@ -4,7 +4,7 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: "Dashboard",
+  title: "لوحة التحكم",
 })
 
 import { TrendingUp, TrendingDown, Wallet, Percent } from "lucide-vue-next";
@@ -42,8 +42,8 @@ const kpis = computed(() => {
 <template>
   <div>
     <AppHeader
-      title="Dashboard"
-      subtitle="Here's how your business is performing."
+      title="لوحة التحكم"
+      subtitle="هكذا يبدو أداء عملك الآن."
     />
 
     <section v-if="kpis.length" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

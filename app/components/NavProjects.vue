@@ -16,7 +16,7 @@ const { isMobile } = useSidebar();
 
 <template>
   <SidebarGroup class="group-data-[collapsible=icon]:hidden">
-    <SidebarGroupLabel>Projects</SidebarGroupLabel>
+    <SidebarGroupLabel>المشاريع</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem v-for="item in projects" :key="item.name">
         <SidebarMenuButton as-child>
@@ -29,7 +29,7 @@ const { isMobile } = useSidebar();
           <DropdownMenuTrigger as-child>
             <SidebarMenuAction show-on-hover>
               <MoreHorizontal />
-              <span class="sr-only">More</span>
+              <span class="sr-only">المزيد</span>
             </SidebarMenuAction>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -39,16 +39,16 @@ const { isMobile } = useSidebar();
           >
             <DropdownMenuItem>
               <Folder class="text-muted-foreground" />
-              <span>View Project</span>
+              <span>عرض المشروع</span>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Forward class="text-muted-foreground" />
-              <span>Share Project</span>
+              <span>مشاركة المشروع</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Trash2 class="text-muted-foreground" />
-              <span>Delete Project</span>
+              <span>حذف المشروع</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -56,7 +56,7 @@ const { isMobile } = useSidebar();
       <SidebarMenuItem>
         <SidebarMenuButton class="text-sidebar-foreground/70">
           <MoreHorizontal class="text-sidebar-foreground/70" />
-          <span>More</span>
+          <span>المزيد</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>

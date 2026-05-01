@@ -36,7 +36,7 @@ const formattedAmount = computed(() => {
       class="hidden justify-self-center md:inline-flex rounded-md text-[10px] font-black uppercase tracking-wider h-6"
       :variant="type === 'Revenue' ? 'secondary' : 'outline'"
     >
-      {{ type }}
+      {{ type === 'Revenue' ? 'إيراد' : 'مصروف' }}
     </Badge>
     <strong
       class="justify-self-end text-sm font-black tabular-nums"

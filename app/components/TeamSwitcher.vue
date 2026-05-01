@@ -44,13 +44,13 @@ const activeTeam = ref(props.teams[0]!)
             <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
               <component :is="activeTeam.logo" class="size-4" />
             </div>
-            <div class="grid flex-1 text-left text-sm leading-tight">
+            <div class="grid flex-1 text-start text-sm leading-tight">
               <span class="truncate font-medium">
                 {{ activeTeam.name }}
               </span>
               <span class="truncate text-xs">{{ activeTeam.plan }}</span>
             </div>
-            <ChevronsUpDown class="ml-auto" />
+            <ChevronsUpDown class="ms-auto" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -60,7 +60,7 @@ const activeTeam = ref(props.teams[0]!)
           :side-offset="4"
         >
           <DropdownMenuLabel class="text-xs text-muted-foreground">
-            Teams
+            الفرق
           </DropdownMenuLabel>
           <DropdownMenuItem
             v-for="(team, index) in teams"
@@ -80,7 +80,7 @@ const activeTeam = ref(props.teams[0]!)
               <Plus class="size-4" />
             </div>
             <div class="font-medium text-muted-foreground">
-              Add team
+              إضافة فريق
             </div>
           </DropdownMenuItem>
         </DropdownMenuContent>

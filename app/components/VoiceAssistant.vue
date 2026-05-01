@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useAIAssistant } from '~/composables/useAIAssistant';
-import { useAgents } from '~/composables/useAgents';
-import { computed } from 'vue';
-import { CheckCircle2, XCircle } from 'lucide-vue-next';
+import { useAIAssistant } from "~/composables/useAIAssistant";
+import { useAgents } from "~/composables/useAgents";
+import { computed } from "vue";
+import { CheckCircle2, XCircle } from "lucide-vue-next";
 
 interface Props {
   // When true, the chair sits at the same visual scale as the specialist
@@ -24,39 +24,44 @@ const {
 } = useAIAssistant();
 
 const { getAgent } = useAgents();
-const chair = computed(() => getAgent('chair'));
+const chair = computed(() => getAgent("chair"));
 
 // The chair only reflects voice-session state when IT is the active agent.
 // Otherwise (a specialist is in session, or no session at all), the chair
 // stays visually idle. Without this, clicking CFO would also light up the
 // chair because both read from the same global robotState.
-const chairIsActive = computed(() => activeAgent.value === 'chair' && isSessionActive.value);
-const chairState = computed(() => (chairIsActive.value ? robotState.value : 'idle'));
+const chairIsActive = computed(
+  () => activeAgent.value === "chair" && isSessionActive.value,
+);
+const chairState = computed(() =>
+  chairIsActive.value ? robotState.value : "idle",
+);
 
 // The chair button always switches to the chair persona — never inherits
 // whichever specialist might currently be active.
-const onChairClick = () => toggleListen('chair');
+const onChairClick = () => toggleListen("chair");
 
 // Chair PNG has more transparent padding than the specialist PNGs, so a
 // matching size class renders smaller. Bump one step up in compact mode
 // so the *visible* robot matches the other four.
-const robotSizeClass = computed(() =>
-  props.compact
-    ? 'size-40 md:size-48 lg:size-52'    // matches AgentAvatar size="xl" — fits 4-up without scroll
-    : 'size-64 md:size-80 lg:size-96'    // original hero size
+const robotSizeClass = computed(
+  () =>
+    props.compact
+      ? "size-40 md:size-48 lg:size-52" // matches AgentAvatar size="xl" — fits 4-up without scroll
+      : "size-64 md:size-80 lg:size-96", // original hero size
 );
 
 const getMessage = computed(() => {
   switch (chairState.value) {
-    case 'idle':
+    case "idle":
       return "مرحباً! أنا شريكك المؤسس الذكي. كيف يمكنني مساعدة عملك اليوم؟";
-    case 'listening':
+    case "listening":
       return "أستمع إليك...";
-    case 'understanding':
+    case "understanding":
       return "أفكر وأحلل...";
-    case 'preview_ready':
+    case "preview_ready":
       return "هذا ما فهمته. يرجى التأكيد.";
-    case 'saved':
+    case "saved":
       return "تم حفظ بياناتك وتحديث كل شيء!";
     default:
       return "جاهز.";
@@ -68,7 +73,7 @@ const getMessage = computed(() => {
   <div
     :class="[
       'relative flex flex-col items-center justify-center w-full',
-      compact ? 'gap-4' : 'gap-12 min-h-[70vh] py-10'
+      compact ? 'gap-4' : 'gap-12 min-h-[70vh] py-10',
     ]"
   >
     <!-- Error Bubble -->
@@ -76,7 +81,10 @@ const getMessage = computed(() => {
       enter-active-class="animate-in fade-in slide-in-from-top-4 duration-300"
       leave-active-class="animate-out fade-out slide-in-from-top-4 duration-300"
     >
-      <div v-if="error" class="absolute top-0 left-1/2 -translate-x-1/2 z-20 w-full max-w-md rounded-xl border border-destructive/20 bg-destructive/90 p-3 text-center text-white shadow-2xl backdrop-blur-md">
+      <div
+        v-if="error"
+        class="absolute top-0 start-1/2 -translate-x-1/2 z-20 w-full max-w-md rounded-xl border border-destructive/20 bg-destructive/90 p-3 text-center text-white shadow-2xl backdrop-blur-md"
+      >
         <p class="text-sm font-bold tracking-wide uppercase">{{ error }}</p>
       </div>
     </Transition>
@@ -86,27 +94,49 @@ const getMessage = computed(() => {
       enter-active-class="animate-in fade-in slide-in-from-bottom-4 duration-300"
       leave-active-class="animate-out fade-out slide-in-from-bottom-4 duration-300"
     >
-      <div v-if="previewData" class="w-full max-w-md rounded-2xl border border-white/20 bg-background/90 p-6 shadow-2xl backdrop-blur-xl">
-        <h4 class="font-bold mb-4 text-base">Please Confirm</h4>
-        
-        <div v-if="previewData.summary" class="mb-4 rounded-xl bg-primary/10 p-3 text-sm italic border-l-4 border-primary/40">
+      <div
+        v-if="previewData"
+        class="w-full max-w-md rounded-2xl border border-white/20 bg-background/90 p-6 shadow-2xl backdrop-blur-xl"
+      >
+        <h4 class="font-bold mb-4 text-base">يرجى التأكيد</h4>
+
+        <div
+          v-if="previewData.summary"
+          class="mb-4 rounded-xl bg-primary/10 p-3 text-sm italic border-s-4 border-primary/40"
+        >
           {{ previewData.summary }}
         </div>
-        
+
         <div v-if="previewData.revenues.length > 0" class="mb-4">
-          <h5 class="text-sm font-semibold text-chart-4 mb-2 uppercase tracking-wider">Revenues</h5>
+          <h5
+            class="text-sm font-semibold text-chart-4 mb-2 uppercase tracking-wider"
+          >
+            الإيرادات
+          </h5>
           <ul class="text-sm space-y-2">
-            <li v-for="(r, i) in previewData.revenues" :key="i" class="flex justify-between border-b border-border/50 pb-1">
+            <li
+              v-for="(r, i) in previewData.revenues"
+              :key="i"
+              class="flex justify-between border-b border-border/50 pb-1"
+            >
               <span>{{ r.category }} (x{{ r.quantity || 1 }})</span>
               <span class="font-bold text-chart-4">+${{ r.amount }}</span>
             </li>
           </ul>
         </div>
-        
+
         <div v-if="previewData.expenses.length > 0" class="mb-6">
-          <h5 class="text-sm font-semibold text-destructive mb-2 uppercase tracking-wider">Expenses</h5>
+          <h5
+            class="text-sm font-semibold text-destructive mb-2 uppercase tracking-wider"
+          >
+            المصروفات
+          </h5>
           <ul class="text-sm space-y-2">
-            <li v-for="(e, i) in previewData.expenses" :key="i" class="flex justify-between border-b border-border/50 pb-1">
+            <li
+              v-for="(e, i) in previewData.expenses"
+              :key="i"
+              class="flex justify-between border-b border-border/50 pb-1"
+            >
               <span>{{ e.category }}</span>
               <span class="font-bold text-destructive">-${{ e.amount }}</span>
             </li>
@@ -114,11 +144,18 @@ const getMessage = computed(() => {
         </div>
 
         <div class="flex gap-3">
-          <Button class="flex-1 gap-2" variant="outline" @click="handleCancelPreview">
-            <XCircle class="size-5" /> Cancel
+          <Button
+            class="flex-1 gap-2"
+            variant="outline"
+            @click="handleCancelPreview"
+          >
+            <XCircle class="size-5" /> إلغاء
           </Button>
-          <Button class="flex-1 gap-2 bg-primary text-primary-foreground hover:bg-primary/90" @click="handleConfirmPreview">
-            <CheckCircle2 class="size-5" /> Confirm
+          <Button
+            class="flex-1 gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+            @click="handleConfirmPreview"
+          >
+            <CheckCircle2 class="size-5" /> تأكيد
           </Button>
         </div>
       </div>
@@ -129,51 +166,93 @@ const getMessage = computed(() => {
       enter-active-class="animate-in fade-in slide-in-from-bottom-4 duration-300"
       leave-active-class="animate-out fade-out slide-in-from-bottom-4 duration-300"
     >
-      <div v-show="!previewData && chairIsActive" class="relative w-full max-w-lg rounded-3xl border border-white/10 bg-background/80 p-6 shadow-2xl backdrop-blur-xl text-center" dir="rtl">
-        <p class="text-lg md:text-xl font-medium leading-relaxed">{{ getMessage }}</p>
+      <div
+        v-show="!previewData && chairIsActive"
+        class="relative w-full max-w-lg rounded-3xl border border-white/10 bg-background/80 p-6 shadow-2xl backdrop-blur-xl text-center"
+      >
+        <p class="text-lg md:text-xl font-medium leading-relaxed">
+          {{ getMessage }}
+        </p>
         <!-- Triangle pointing down to the robot -->
-        <div class="absolute -bottom-3 left-1/2 w-6 h-6 -translate-x-1/2 rotate-45 border-b border-r border-white/10 bg-background/80 backdrop-blur-xl"></div>
+        <div
+          class="absolute -bottom-3 start-1/2 size-6 -translate-x-1/2 rotate-45 border-b border-r border-white/10 bg-background/80 backdrop-blur-xl"
+        ></div>
       </div>
     </Transition>
 
     <!-- Robot + label, mirroring AgentAvatar's structure so the chair sits
          visually as a peer of the specialists in the chat page row. -->
     <div :class="['flex flex-col items-center', compact ? 'gap-2' : '']">
-    <button
-      :class="[
-        'group relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95 cursor-pointer animate-float',
-        robotSizeClass
-      ]"
-      :aria-label="chairState === 'listening' ? 'Stop Listening' : 'Start Voice Assistant'"
-      @click="onChairClick"
-    >
-      <!-- Glow rings — driven by chairState so the chair stays calm when a
+      <button
+        :class="[
+          'group relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95 cursor-pointer animate-float',
+          robotSizeClass,
+        ]"
+        :aria-label="
+          chairState === 'listening' ? 'إيقاف الاستماع' : 'بدء المساعد الصوتي'
+        "
+        @click="onChairClick"
+      >
+        <!-- Glow rings — driven by chairState so the chair stays calm when a
            specialist is the one in session. -->
-      <div class="absolute inset-0 rounded-full transition-all duration-500 blur-2xl opacity-40"
-        :class="{
-          'bg-blue-500 scale-100': chairState === 'idle',
-          'bg-blue-400 scale-110 animate-pulse': chairState === 'listening',
-          'bg-purple-500 scale-110 animate-spin-slow': chairState === 'understanding',
-          'bg-orange-500 scale-105 animate-pulse': chairState === 'preview_ready',
-          'bg-green-500 scale-100': chairState === 'saved'
-        }"
-      ></div>
+        <div
+          class="absolute inset-0 rounded-full transition-all duration-500 blur-2xl opacity-40"
+          :class="{
+            'bg-blue-500 scale-100': chairState === 'idle',
+            'bg-blue-400 scale-110 animate-pulse': chairState === 'listening',
+            'bg-purple-500 scale-110 animate-spin-slow':
+              chairState === 'understanding',
+            'bg-orange-500 scale-105 animate-pulse':
+              chairState === 'preview_ready',
+            'bg-green-500 scale-100': chairState === 'saved',
+          }"
+        ></div>
 
-      <!-- Robot Images overlapping -->
-      <div class="relative w-full h-full pointer-events-none">
-        <img src="/robot/0.png" alt="Idle" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="chairState === 'idle' ? 'opacity-100' : 'opacity-0'" />
-        <img src="/robot/2.png" alt="Listening" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="chairState === 'listening' ? 'opacity-100' : 'opacity-0'" />
-        <img src="/robot/2.png" alt="Understanding" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="chairState === 'understanding' ? 'opacity-100' : 'opacity-0'" />
-        <img src="/robot/3.png" alt="Preview/Saved" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 drop-shadow-2xl" :class="(chairState === 'preview_ready' || chairState === 'saved') ? 'opacity-100' : 'opacity-0'" />
-      </div>
-    </button>
+        <!-- Robot Images overlapping -->
+        <div class="relative size-full pointer-events-none">
+          <img
+            src="/robot/0.png"
+            alt="خامل"
+            class="absolute inset-0 size-full object-contain transition-opacity duration-500 drop-shadow-2xl"
+            :class="chairState === 'idle' ? 'opacity-100' : 'opacity-0'"
+          />
+          <img
+            src="/robot/2.png"
+            alt="يستمع"
+            class="absolute inset-0 size-full object-contain transition-opacity duration-500 drop-shadow-2xl"
+            :class="chairState === 'listening' ? 'opacity-100' : 'opacity-0'"
+          />
+          <img
+            src="/robot/2.png"
+            alt="يفهم"
+            class="absolute inset-0 size-full object-contain transition-opacity duration-500 drop-shadow-2xl"
+            :class="
+              chairState === 'understanding' ? 'opacity-100' : 'opacity-0'
+            "
+          />
+          <img
+            src="/robot/3.png"
+            alt="معاينة أو محفوظ"
+            class="absolute inset-0 size-full object-contain transition-opacity duration-500 drop-shadow-2xl"
+            :class="
+              chairState === 'preview_ready' || chairState === 'saved'
+                ? 'opacity-100'
+                : 'opacity-0'
+            "
+          />
+        </div>
+      </button>
 
-    <!-- Label below the chair, only in compact mode (the chat-page row).
+      <!-- Label below the chair, only in compact mode (the chat-page row).
          In hero mode the speech bubble already names the agent. -->
-    <div v-if="compact" class="text-center">
-      <div class="text-sm font-bold leading-tight">{{ chair.arabicName }}</div>
-      <div class="text-[10px] uppercase tracking-wider opacity-60">{{ chair.displayName }}</div>
-    </div>
+      <div v-if="compact" class="text-center">
+        <div class="text-sm font-bold leading-tight">
+          {{ chair.arabicName }}
+        </div>
+        <div class="text-[10px] uppercase tracking-wider opacity-60">
+          {{ chair.displayName }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -184,8 +263,13 @@ const getMessage = computed(() => {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
 .animate-float {

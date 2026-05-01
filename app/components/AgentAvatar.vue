@@ -111,20 +111,20 @@ const tintRing = computed(() => {
            whose PNG already fills the frame (CMO, Operator) want <1.0 to
            pull in and match. Falls back to 1.0 when no scale is configured. -->
       <div
-        class="relative w-full h-full pointer-events-none"
+        class="relative size-full pointer-events-none"
         :style="{ transform: `scale(${agent.imageScale ?? 1})` }"
       >
         <img
           :src="agent.asset.idle"
           :alt="`${agent.displayName} idle`"
-          class="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 drop-shadow-2xl"
+          class="absolute inset-0 size-full object-contain transition-opacity duration-300 drop-shadow-2xl"
           :class="state === 'idle' && !speaking ? 'opacity-100' : 'opacity-0'"
           @error="(ev) => ((ev.target as HTMLImageElement).style.opacity = '0')"
         >
         <img
           :src="agent.asset.listening"
           :alt="`${agent.displayName} active`"
-          class="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 drop-shadow-2xl"
+          class="absolute inset-0 size-full object-contain transition-opacity duration-300 drop-shadow-2xl"
           :class="(state === 'listening' || speaking) ? 'opacity-100' : 'opacity-0'"
           @error="(ev) => ((ev.target as HTMLImageElement).style.opacity = '0')"
         >

@@ -13,10 +13,10 @@ import {
   <Card class="gap-5 rounded-md py-5">
     <CardHeader class="px-5">
       <CardTitle class="text-xl font-black uppercase tracking-tight">
-        Expense Pressure
+        ضغط المصروفات
       </CardTitle>
       <CardAction>
-      <Button variant="ghost" size="sm" class="h-8 rounded-md text-[10px] font-black uppercase tracking-wider"> View all </Button>
+      <Button variant="ghost" size="sm" class="h-8 rounded-md text-[10px] font-black uppercase tracking-wider"> عرض الكل </Button>
       </CardAction>
     </CardHeader>
     <CardContent class="grid gap-6 px-5">
@@ -39,7 +39,7 @@ import {
             />
           </div>
         </div>
-        <p class="text-right text-[10px] font-black uppercase tabular-nums">
+        <p class="text-end text-[10px] font-black uppercase tabular-nums">
           <span class="text-muted-foreground">{{ moneyFormatter.format(category.value) }}</span><br>
           <span class="text-destructive">{{ category.percent }}%</span>
         </p>

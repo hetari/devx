@@ -37,17 +37,17 @@ const userInitials = computed(() =>
             size="lg"
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
-            <Avatar class="h-8 w-8 rounded-lg">
+            <Avatar class="size-8 rounded-lg">
               <AvatarImage :src="user.avatar" :alt="user.name" />
               <AvatarFallback class="rounded-lg">
                 {{ userInitials }}
               </AvatarFallback>
             </Avatar>
-            <div class="grid flex-1 text-left text-sm leading-tight">
+            <div class="grid flex-1 text-start text-sm leading-tight">
               <span class="truncate font-medium">{{ user.name }}</span>
               <span class="truncate text-xs">{{ user.email }}</span>
             </div>
-            <ChevronsUpDown class="ml-auto size-4" />
+            <ChevronsUpDown class="ms-auto size-4" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -57,14 +57,14 @@ const userInitials = computed(() =>
           :side-offset="4"
         >
           <DropdownMenuLabel class="p-0 font-normal">
-            <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-              <Avatar class="h-8 w-8 rounded-lg">
+            <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+              <Avatar class="size-8 rounded-lg">
                 <AvatarImage :src="user.avatar" :alt="user.name" />
                 <AvatarFallback class="rounded-lg">
                   {{ userInitials }}
                 </AvatarFallback>
               </Avatar>
-              <div class="grid flex-1 text-left text-sm leading-tight">
+              <div class="grid flex-1 text-start text-sm leading-tight">
                 <span class="truncate font-semibold">{{ user.name }}</span>
                 <span class="truncate text-xs">{{ user.email }}</span>
               </div>
@@ -74,28 +74,28 @@ const userInitials = computed(() =>
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <Sparkles />
-              Upgrade to Pro
+              الترقية إلى برو
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <BadgeCheck />
-              Account
+              الحساب
             </DropdownMenuItem>
             <DropdownMenuItem>
               <CreditCard />
-              Billing
+              الفوترة
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Bell />
-              Notifications
+              الإشعارات
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <LogOut />
-            Log out
+            تسجيل الخروج
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

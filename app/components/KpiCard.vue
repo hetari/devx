@@ -34,7 +34,7 @@ type SparklinePoint = (typeof sparklineData)[number]
 
 const sparklineConfig = {
   value: {
-    label: "Trend",
+    label: "الاتجاه",
     color: "var(--primary)",
   },
 } satisfies ChartConfig
@@ -58,7 +58,7 @@ const sparklineConfig = {
         {{ value }}
       </h2>
       <p class="mt-1 text-[10px] font-medium text-muted-foreground">
-        VS APR 1 - APR 30
+        مقارنةً بالفترة 1 أبريل - 30 أبريل
       </p>
       <ChartContainer :config="sparklineConfig" class="mt-5 h-10">
         <VisXYContainer

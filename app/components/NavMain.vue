@@ -18,7 +18,7 @@ defineProps<{
 
 <template>
   <SidebarGroup>
-    <SidebarGroupLabel>Platform</SidebarGroupLabel>
+    <SidebarGroupLabel>المنصة</SidebarGroupLabel>
     <SidebarMenu>
       <Collapsible
         v-for="item in items"
@@ -33,7 +33,7 @@ defineProps<{
               <component :is="item.icon" v-if="item.icon" />
               <span>{{ item.title }}</span>
               <ChevronRight
-                class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+                class="ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
               />
             </SidebarMenuButton>
           </CollapsibleTrigger>

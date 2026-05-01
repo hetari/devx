@@ -18,8 +18,8 @@ const latestInsight = computed(() => {
     return insights.value[0];
   }
   return {
-    what_happened: "Profit is trending +24.1%.",
-    what_to_do: "Check expense pressure."
+    what_happened: "يتجه الربح إلى +24.1%.",
+    what_to_do: "تحقق من ضغط المصروفات."
   };
 });
 </script>
@@ -34,7 +34,7 @@ const latestInsight = computed(() => {
       <ToneIcon :icon="Bot" tone="primary" class="size-14" />
       <div>
         <h2 class="text-xl font-black uppercase tracking-tight">
-          System Pulse: {{ insights.length > 0 ? 'Actionable' : 'Healthy' }}
+          نبض النظام: {{ insights.length > 0 ? 'قابل للتنفيذ' : 'سليم' }}
         </h2>
         <p class="mt-1 text-sm font-medium text-muted-foreground">
           <span class="text-chart-4 font-black">{{ latestInsight.what_happened }}</span>
@@ -46,7 +46,7 @@ const latestInsight = computed(() => {
       <Button as-child variant="outline" class="justify-between h-10 rounded-md text-xs font-black uppercase tracking-wider">
         <NuxtLink to="/chat">
           <span class="inline-flex items-center gap-2"
-            ><BarChart3 class="size-4" /> Analyse Revenue Flow</span
+            ><BarChart3 class="size-4" /> تحليل تدفق الإيرادات</span
           >
           <ArrowRight class="size-4" />
         </NuxtLink>
@@ -54,7 +54,7 @@ const latestInsight = computed(() => {
       <Button as-child variant="outline" class="justify-between h-10 rounded-md text-xs font-black uppercase tracking-wider">
         <NuxtLink to="/chat">
           <span class="inline-flex items-center gap-2"
-            ><HelpCircle class="size-4" /> Query Profit Delta</span
+            ><HelpCircle class="size-4" /> استفسر عن فرق الربح</span
           >
           <ArrowRight class="size-4" />
         </NuxtLink>
@@ -62,7 +62,7 @@ const latestInsight = computed(() => {
       <Button as-child variant="outline" class="justify-between h-10 rounded-md text-xs font-black uppercase tracking-wider">
         <NuxtLink to="/learn">
           <span class="inline-flex items-center gap-2"
-            ><Lightbulb class="size-4" /> Growth Protcols</span
+            ><Lightbulb class="size-4" /> بروتوكولات النمو</span
           >
           <ArrowRight class="size-4" />
         </NuxtLink>

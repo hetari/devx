@@ -35,10 +35,10 @@ const goals = computed(() => {
 <template>
   <Card class="gap-5 rounded-md py-5">
     <CardHeader class="px-5">
-      <CardTitle class="text-xl font-black uppercase tracking-tight">Goals Progress</CardTitle>
+      <CardTitle class="text-xl font-black uppercase tracking-tight">تقدم الأهداف</CardTitle>
       <CardAction>
       <Button as-child variant="ghost" size="sm" class="h-8 rounded-md text-[10px] font-black uppercase tracking-wider">
-        <NuxtLink to="/goals">View all</NuxtLink>
+        <NuxtLink to="/goals">عرض الكل</NuxtLink>
       </Button>
       </CardAction>
     </CardHeader>
@@ -66,7 +66,7 @@ const goals = computed(() => {
         <strong class="text-sm font-black">{{ goal.progress }}%</strong>
       </div>
       <div v-if="goals.length === 0" class="py-4 text-center text-muted-foreground text-[10px] italic uppercase tracking-widest">
-        No active goals.
+        لا توجد أهداف نشطة.
       </div>
     </CardContent>
   </Card>

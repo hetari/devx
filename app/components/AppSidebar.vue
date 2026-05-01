@@ -18,96 +18,96 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 
 const data = {
   user: {
-    name: "Ebraheem Alhetari",
+    name: "إبراهيم الحتري",
     email: "hetari@devx.com",
     avatar: "",
   },
   teams: [
     {
-      name: "Devx",
+      name: "شريكك",
       logo: Building2,
-      plan: "AI Business Partner",
+      plan: "مساعدك التجاري الذكي",
     },
     {
-      name: "Devx Retail",
+      name: "شريكك للتجزئة",
       logo: ShoppingCart,
-      plan: "Sales workspace",
+      plan: "مساحة المبيعات",
     },
   ],
   navMain: [
     {
-      title: "Business",
+      title: "الأعمال",
       url: "/",
       icon: Home,
       isActive: true,
       items: [
         {
-          title: "Home",
+          title: "الرئيسية",
           url: "/",
         },
         {
-          title: "Dashboard",
+          title: "لوحة التحكم",
           url: "/dashboard",
         },
         {
-          title: "Transactions",
+          title: "المعاملات",
           url: "/transactions",
         },
       ],
     },
     {
-      title: "Money",
+      title: "المال",
       url: "/dashboard",
       icon: Wallet,
       items: [
         {
-          title: "Cash flow",
+          title: "التدفق النقدي",
           url: "/dashboard",
         },
         {
-          title: "Reports",
+          title: "التقارير",
           url: "/reports",
         },
         {
-          title: "Goals",
+          title: "الأهداف",
           url: "/goals",
         },
       ],
     },
     {
-      title: "AI Partner",
+      title: "الشريك الذكي",
       url: "/chat",
       icon: Bot,
       items: [
         {
-          title: "AI Chat",
+          title: "دردشة الذكاء",
           url: "/chat",
         },
         {
-          title: "Insights",
+          title: "الرؤى",
           url: "/insights",
         },
         {
-          title: "Learn",
+          title: "التعلم",
           url: "/learn",
         },
       ],
     },
     {
-      title: "Settings",
+      title: "الإعدادات",
       url: "/settings",
       icon: Settings,
       items: [
         {
-          title: "Business profile",
+          title: "ملف النشاط",
           url: "/settings",
         },
         {
-          title: "Preferences",
+          title: "التفضيلات",
           url: "/settings",
         },
         {
-          title: "Notifications",
+          title: "الإشعارات",
           url: "/settings",
         },
       ],
@@ -115,17 +115,17 @@ const data = {
   ],
   projects: [
     {
-      name: "Sales tracker",
+      name: "متعقب المبيعات",
       url: "/transactions",
       icon: Repeat2,
     },
     {
-      name: "Expense categories",
+      name: "فئات المصروفات",
       url: "/reports",
       icon: PieChart,
     },
     {
-      name: "Learning plan",
+      name: "خطة التعلم",
       url: "/learn",
       icon: GraduationCap,
     },
