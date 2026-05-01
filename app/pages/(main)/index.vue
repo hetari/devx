@@ -250,7 +250,7 @@ useHead({
     <main id="main-content">
       <!-- Hero -->
       <section
-        class="relative mx-auto grid min-h-[calc(100dvh-4rem)] max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:py-16"
+        class="relative mx-auto grid min-h-[calc(100dvh-4rem)] max-w-7xl grid-cols-1 items-center gap-10 px-4 py-12 sm:px-6 lg:px-8 lg:py-16 xl:grid-cols-[.95fr_1.05fr]"
       >
         <div
           class="pointer-events-none absolute inset-x-4 top-8 -z-10 h-80 rounded-md bg-gradient-to-br from-primary/12 via-accent/30 to-secondary/40 blur-3xl"
@@ -322,7 +322,7 @@ useHead({
           aria-label="لوحة شريكك تعرض الإيرادات وهامش الربح والتدفق النقدي والأهداف ونصائح الذكاء."
         >
           <div
-            class="grid h-full min-h-[536px] gap-3 rounded-sm bg-background p-3 lg:grid-cols-[1.15fr_.85fr]"
+            class="grid h-full min-h-[536px] grid-cols-1 gap-3 rounded-sm bg-background p-3 xl:grid-cols-[1.15fr_.85fr]"
           >
             <div class="grid min-w-0 content-between gap-3">
               <div
@@ -375,7 +375,7 @@ useHead({
               </div>
             </div>
 
-            <div class="grid gap-3">
+            <div class="grid min-w-0 gap-3">
               <div
                 class="rounded-md border border-primary/20 bg-primary p-4 text-primary-foreground"
               >

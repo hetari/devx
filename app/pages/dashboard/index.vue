@@ -56,14 +56,25 @@ const kpis = computed(() => {
       />
     </section>
 
-    <section class="mt-4 grid gap-4 xl:grid-cols-3">
-      <ReceiptCapture class="xl:col-span-3 landing-reveal" :style="{ animationDelay: '200ms' }" />
-      <NightShiftFeed class="xl:col-span-3 landing-reveal" :style="{ animationDelay: '240ms' }" />
-      <CashFlowCard :chart-data="stats?.chartData" class="xl:col-span-2 landing-reveal" :style="{ animationDelay: '320ms' }" />
-      <GoalsCard class="landing-reveal" :style="{ animationDelay: '400ms' }" />
-      <ExpenseCategories class="landing-reveal" :style="{ animationDelay: '480ms' }" />
-      <AssistantCard class="landing-reveal" :style="{ animationDelay: '560ms' }" />
-      <RecentTransactions class="xl:col-span-2 landing-reveal" :style="{ animationDelay: '640ms' }" />
+    <section class="mt-4 grid gap-4">
+      <ReceiptCapture class="landing-reveal" :style="{ animationDelay: '200ms' }" />
+      <NightShiftFeed class="landing-reveal" :style="{ animationDelay: '240ms' }" />
+
+      <div class="grid gap-4 xl:grid-cols-[minmax(0,1.7fr)_minmax(320px,1fr)]">
+        <CashFlowCard
+          :chart-data="stats?.chartData"
+          class="landing-reveal min-w-0"
+          :style="{ animationDelay: '320ms' }"
+        />
+
+        <div class="grid gap-4">
+          <GoalsCard class="landing-reveal" :style="{ animationDelay: '400ms' }" />
+          <ExpenseCategories class="landing-reveal" :style="{ animationDelay: '480ms' }" />
+          <AssistantCard class="landing-reveal" :style="{ animationDelay: '560ms' }" />
+        </div>
+      </div>
+
+      <RecentTransactions class="landing-reveal" :style="{ animationDelay: '640ms' }" />
     </section>
   </div>
 </template>

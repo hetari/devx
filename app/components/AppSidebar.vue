@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 
 const data = {
   user: {
-    name: "إبراهيم الحتري",
+    name: "إبراهيم الهتاري",
     email: "hetari@devx.com",
     avatar: "",
   },

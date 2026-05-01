@@ -16,6 +16,7 @@ import { useOCR } from "~/composables/useOCR";
 import { useAIAssistant } from "~/composables/useAIAssistant";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -131,7 +132,7 @@ const removeExpense = (index: number) => {
                 v-model="previewData.summary"
                 class="w-full rounded-xl bg-primary/5 p-3 border border-primary/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none italic"
                 placeholder="اكتب ملخصاً للمستند..."
-              ></Textarea>
+              />
             </div>
             <div class="space-y-2">
               <Label

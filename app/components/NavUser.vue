@@ -43,7 +43,7 @@ const userInitials = computed(() =>
                 {{ userInitials }}
               </AvatarFallback>
             </Avatar>
-            <div class="grid flex-1 text-start text-sm leading-tight">
+            <div class="grid flex-1 text-end text-sm leading-tight">
               <span class="truncate font-medium">{{ user.name }}</span>
               <span class="truncate text-xs">{{ user.email }}</span>
             </div>
@@ -57,14 +57,14 @@ const userInitials = computed(() =>
           :side-offset="4"
         >
           <DropdownMenuLabel class="p-0 font-normal">
-            <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+            <div class="flex items-center gap-2 px-1 py-1.5 text-end text-sm">
               <Avatar class="size-8 rounded-lg">
                 <AvatarImage :src="user.avatar" :alt="user.name" />
                 <AvatarFallback class="rounded-lg">
                   {{ userInitials }}
                 </AvatarFallback>
               </Avatar>
-              <div class="grid flex-1 text-start text-sm leading-tight">
+              <div class="grid flex-1 text-end text-sm leading-tight">
                 <span class="truncate font-semibold">{{ user.name }}</span>
                 <span class="truncate text-xs">{{ user.email }}</span>
               </div>
