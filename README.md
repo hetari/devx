@@ -4,6 +4,9 @@ An AI-powered Nuxt app for managing business finances, transactions, insights, g
 
 <img width="2818" height="1616" alt="image" src="https://github.com/user-attachments/assets/7e587cfb-65fb-4070-9ca3-0b6506486f3e" />
 
+## Presentation url
+https://hetari.github.io/devx/
+
 ## What this project does
 
 - Tracks cash flow, revenue, expenses, and transactions.
