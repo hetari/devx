@@ -50,7 +50,7 @@ const heroStats = [
   {
     label: "المصروفات المكتشفة",
     value: currencyFormatter.format(1560),
-    detail: "3 fixes",
+    detail: "3 تحسينات",
     tone: "text-destructive",
   },
 ] as const;
@@ -75,7 +75,7 @@ const operatingLoop = [
     icon: BarChart3,
   },
   {
-    title: "اسأل عن الخطوة التالية",
+    title: "ما الخطوة التالية؟",
     copy: "يشرح الشريك الذكي ما الذي تغيّر وأي إجراء يجب أن يحدث اليوم.",
     icon: Bot,
   },
@@ -235,7 +235,7 @@ useHead({
           <ToggleMode />
 
           <Button as-child variant="ghost" class="hidden h-9 md:inline-flex">
-            <NuxtLink to="/chat">اسأل الذكاء</NuxtLink>
+            <NuxtLink to="/chat">اسأل شريكك</NuxtLink>
           </Button>
           <Button as-child class="h-9">
             <NuxtLink to="/dashboard">
@@ -266,15 +266,15 @@ useHead({
           </Badge>
 
           <h1
-            class="mt-6 max-w-4xl text-balance text-5xl font-black leading-[.92] tracking-normal text-foreground sm:text-6xl lg:text-7xl"
+            class="mt-6 max-w-4xl text-balance text-5xl font-black text-foreground sm:text-6xl lg:text-7xl"
           >
             يحول شريكك فوضى العمل اليومية إلى أفضل خطوة تالية.
           </h1>
           <p
-            class="mt-6 max-w-2xl text-pretty text-lg leading-8 text-muted-foreground sm:text-xl"
+            class="mt-6 max-w-2xl text-pretty text-lg text-muted-foreground sm:text-xl"
           >
-            مساعد تجاري ذكي هادئ للفرق الصغيرة التي تحتاج المبيعات
-            والمصروفات والتدفق النقدي والتعلم والأهداف والنصيحة في مكان واحد.
+            مساعد تجاري ذكي هادئ للفرق الصغيرة التي تحتاج المبيعات والمصروفات
+            والتدفق النقدي والتعلم والأهداف والنصيحة في مكان واحد.
           </p>
 
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -381,9 +381,9 @@ useHead({
               >
                 <div class="flex items-center gap-2">
                   <Bot class="size-5" aria-hidden="true" />
-                  <p class="text-sm font-black">موجز الذكاء جاهز</p>
+                  <p class="text-sm font-black">الملخص الذكي جاهز</p>
                 </div>
-                <p class="mt-4 text-pretty text-2xl font-black leading-tight">
+                <p class="mt-4 text-pretty text-2xl font-black">
                   المصروفات تشكل 63% من الإيرادات. اجمع عمليات التوصيل وأعد
                   التفاوض على المواد أولاً.
                 </p>
@@ -391,7 +391,7 @@ useHead({
                   to="/chat"
                   class="mt-5 inline-flex items-center gap-2 rounded-md bg-primary-foreground px-3 py-2 text-sm font-bold text-primary transition-colors duration-200 hover:bg-primary-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  اسأل متابعة
+                  اطلب توضيحاً
                   <ArrowRight class="size-4" aria-hidden="true" />
                 </NuxtLink>
               </div>
@@ -400,7 +400,7 @@ useHead({
                 class="rounded-md border bg-card p-4 text-card-foreground shadow-sm"
               >
                 <div class="flex items-center justify-between gap-3">
-                  <p class="text-sm font-black">تقدم الهدف</p>
+                  <p class="text-sm font-black">تقدم الأهداف</p>
                   <span
                     class="rounded-md bg-muted px-2 py-1 text-xs font-black text-muted-foreground"
                   >
@@ -493,9 +493,7 @@ useHead({
           >
             حلقة التشغيل
           </Badge>
-          <h2
-            class="mt-4 text-balance text-4xl font-black leading-tight sm:text-5xl"
-          >
+          <h2 class="mt-4 text-balance text-4xl font-black sm:text-5xl">
             الإيقاع اليومي الذي يحافظ على شفافية العمل الصغير.
           </h2>
         </div>
@@ -523,7 +521,7 @@ useHead({
               }}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p class="text-pretty leading-7 text-muted-foreground">
+              <p class="text-pretty text-muted-foreground">
                 {{ step.copy }}
               </p>
             </CardContent>
@@ -543,16 +541,12 @@ useHead({
             >
               محرك الرؤى
             </Badge>
-            <h2
-              class="mt-4 text-balance text-4xl font-black leading-tight sm:text-5xl"
-            >
+            <h2 class="mt-4 text-balance text-4xl font-black sm:text-5xl">
               لا يكتفي بإظهار الأرقام. بل يشرح ما الذي يجب فعله بعد ذلك.
             </h2>
-            <p
-              class="mt-5 text-pretty text-lg leading-8 text-primary-foreground/75"
-            >
-              يجمع شريكك سجل معاملاتك وضغط الفئات والأهداف ومسار التعلم في
-              إرشاد تجاري قصير وقابل للاستخدام.
+            <p class="mt-5 text-pretty text-lg text-primary-foreground/75">
+              يجمع شريكك سجل معاملاتك وضغط الفئات والأهداف ومسار التعلم في إرشاد
+              تجاري قصير وقابل للاستخدام.
             </p>
             <Button
               as-child
@@ -582,7 +576,7 @@ useHead({
                 }}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p class="text-pretty leading-7 text-primary-foreground/75">
+                <p class="text-pretty text-primary-foreground/75">
                   {{ feature.copy }}
                 </p>
               </CardContent>
@@ -603,14 +597,12 @@ useHead({
           >
             مبني ليبدأ الآن
           </Badge>
-          <h2
-            class="mt-4 text-balance text-4xl font-black leading-tight sm:text-5xl"
-          >
+          <h2 class="mt-4 text-balance text-4xl font-black sm:text-5xl">
             لوحة أعمال من دون طقوس المؤسسات.
           </h2>
-          <p class="mt-5 text-pretty text-lg leading-8 text-muted-foreground">
-            استخدم اللوحة اليوم، وأدخل المعاملات الحقيقية عندما تكون
-            جاهزاً، واجعل كل توصية مرتبطة بسلوك عمل يمكن ملاحظته.
+          <p class="mt-5 text-pretty text-lg text-muted-foreground">
+            استخدم اللوحة اليوم، وأدخل المعاملات الحقيقية عندما تكون جاهزاً،
+            واجعل كل توصية مرتبطة بسلوك عمل يمكن ملاحظته.
           </p>
         </div>
 
@@ -624,7 +616,7 @@ useHead({
               <CardTitle class="text-2xl font-black">للأصحاب</CardTitle>
             </CardHeader>
             <CardContent>
-              <p class="leading-7 text-muted-foreground">
+              <p class="text-muted-foreground">
                 افحص نبض العمل قبل فتح المتجر أو طلبات الموردين أو الإنفاق على
                 الترويج.
               </p>
@@ -636,9 +628,9 @@ useHead({
               <CardTitle class="text-2xl font-black">للاطمئنان</CardTitle>
             </CardHeader>
             <CardContent>
-              <p class="leading-7 text-muted-foreground">
-                اجعل القرارات مستندة إلى سجلات نظيفة وتقارير واضحة وسياق
-                حسابات مفهومة.
+              <p class="text-muted-foreground">
+                اجعل القرارات مستندة إلى سجلات نظيفة وتقارير واضحة وسياق حسابات
+                مفهومة.
               </p>
             </CardContent>
           </Card>
@@ -653,9 +645,7 @@ useHead({
         >
           الأسئلة الشائعة
         </Badge>
-        <h2
-          class="mt-4 text-balance text-4xl font-black leading-tight sm:text-5xl"
-        >
+        <h2 class="mt-4 text-balance text-4xl font-black sm:text-5xl">
           أسئلة قد تطرحها قبل أن تثق بالأرقام.
         </h2>
         <Accordion type="single" collapsible class="mt-10 w-full">
@@ -680,10 +670,10 @@ useHead({
           class="mx-auto flex max-w-7xl flex-col gap-6 rounded-md bg-primary p-6 text-primary-foreground sm:p-8 lg:flex-row lg:items-center lg:justify-between"
         >
           <div class="max-w-3xl">
-            <p class="text-sm font-black uppercase">جاهز عندما تكون أنت جاهزاً</p>
-            <h2
-              class="mt-3 text-balance text-3xl font-black leading-tight sm:text-5xl"
-            >
+            <p class="text-sm font-black uppercase">
+              جاهز عندما تكون أنت جاهزاً
+            </p>
+            <h2 class="mt-3 text-balance text-3xl font-black sm:text-5xl">
               توقف عن التخمين أين ذهب المال. وابدأ في تحديد ما يحدث بعد ذلك.
             </h2>
           </div>

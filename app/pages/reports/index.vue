@@ -38,11 +38,11 @@ useSeoMeta({
           </div>
           <div class="flex justify-between gap-4 border-b border-muted/50 pb-3">
             <dt class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">أفضل يوم</dt>
-            <dd class="font-black tabular-nums text-chart-4">MAY 15 +$120</dd>
+            <dd class="font-black tabular-nums text-chart-4">15 مايو +$120</dd>
           </div>
           <div class="flex justify-between gap-4">
             <dt class="text-[10px] font-black uppercase tracking-wider text-muted-foreground">أسوأ يوم</dt>
-            <dd class="font-black tabular-nums text-destructive">MAY 10 -$45</dd>
+            <dd class="font-black tabular-nums text-destructive">10 مايو -$45</dd>
           </div>
         </dl>
       </article>

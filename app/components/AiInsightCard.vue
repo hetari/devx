@@ -13,7 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
       <div class="flex items-center gap-2">
         <Badge variant="secondary" class="gap-1.5">
           <Sparkles class="size-3.5" />
-          رؤية الذكاء
+          رؤية ذكية
         </Badge>
         <Badge>جديد</Badge>
       </div>
@@ -38,7 +38,7 @@ import { Card, CardContent } from "@/components/ui/card";
             <Button as-child>
               <NuxtLink to="/chat">
                 <Sparkles class="size-4" />
-                اسأل الذكاء
+                اسأل شريكك
               </NuxtLink>
             </Button>
             <Button as-child variant="outline">

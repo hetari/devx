@@ -28,7 +28,7 @@ const latestInsight = computed(() => {
   <Card class="gap-5 rounded-md p-5 border-primary/20">
     <Badge variant="primary" class="gap-1.5 rounded-md bg-primary text-primary-foreground font-black uppercase text-[10px] tracking-wider">
       <Sparkles class="size-3" />
-      AI Partner
+      الشريك الذكي
     </Badge>
     <div class="mt-5 flex items-start gap-4">
       <ToneIcon :icon="Bot" tone="primary" class="size-14" />
