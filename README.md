@@ -14,6 +14,14 @@ https://hetari.github.io/devx/
 - Includes dashboard, chat, reports, goals, learning, and settings pages.
 - Uses Prisma with SQLite for local data storage.
 
+## Features
+- meeting room with the specialist founders robots to ask them
+- founders robots take control of everything in the website by using voice commands
+- meeting room for discussion but between the robots 
+- OCR technology for capturing transactions and analyse them
+- active dashboard, transactions
+- robots works everytime: night shifts, morning without needing for you to command them
+
 ## Requirements
 
 - Node.js 20+ or Bun
